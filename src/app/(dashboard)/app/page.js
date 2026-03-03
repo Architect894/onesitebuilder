@@ -1,15 +1,24 @@
-export default function DashboardHomePage() {
+import Link from "next/link";
+
+export default function DashboardPage() {
     return (
-        <main className="min-h-screen bg-neutral-950 px-6 py-20 text-white">
-            <div className="mx-auto max-w-5xl">
-                <p className="text-sm uppercase tracking-[0.2em] text-neutral-400">
-                    Dashboard
-                </p>
-                <h1 className="mt-4 text-4xl font-semibold">Your sites</h1>
-                <p className="mt-4 text-neutral-300">
-                    This will become the customer dashboard for editing and publishing
-                    sites.
-                </p>
+        <main className="p-10">
+            <h1 className="text-3xl font-semibold">Dashboard</h1>
+
+            <div className="mt-6 space-y-4">
+                <Link
+                    href="/app/sites/site_001"
+                    className="block rounded-lg bg-black px-6 py-3 text-white w-fit"
+                >
+                    Edit Site 001
+                </Link>
+
+                <Link
+                    href="/"
+                    className="block rounded-lg border px-6 py-3 w-fit"
+                >
+                    Back to Marketing
+                </Link>
             </div>
         </main>
     );

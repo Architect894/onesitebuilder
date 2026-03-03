@@ -1,22 +1,32 @@
-export default function MarketingHomePage() {
+import Link from "next/link";
+
+export default function MarketingPage() {
     return (
-        <main className="min-h-screen bg-white text-neutral-900">
-            <section className="mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24">
-                <div className="max-w-3xl">
-                    <p className="mb-4 text-sm uppercase tracking-[0.2em] text-neutral-500">
-                        Premium one-page websites for event pros
-                    </p>
+        <main className="p-10">
+            <h1 className="text-3xl font-bold">OneSite Builder</h1>
 
-                    <h1 className="text-5xl font-semibold tracking-tight sm:text-6xl">
-                        A scalable template SaaS starts here.
-                    </h1>
+            <div className="mt-8 space-y-4">
+                <Link
+                    href="/app"
+                    className="block rounded-lg bg-black px-6 py-3 text-white w-fit"
+                >
+                    Go to Dashboard
+                </Link>
 
-                    <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">
-                        This is the public marketing shell. Later this becomes your sales
-                        site for templates, pricing, and onboarding.
-                    </p>
-                </div>
-            </section>
+                <Link
+                    href="/sites/luxe"
+                    className="block rounded-lg border px-6 py-3 w-fit"
+                >
+                    View Public Demo Site
+                </Link>
+
+                <Link
+                    href="/admin"
+                    className="block rounded-lg border px-6 py-3 w-fit"
+                >
+                    Admin
+                </Link>
+            </div>
         </main>
     );
 }
