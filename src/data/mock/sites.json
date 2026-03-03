@@ -1,0 +1,56 @@
+[
+    {
+        "id": "site_001",
+        "userId": "user_001",
+        "name": "Luxe Booth Co.",
+        "subdomain": "luxe",
+        "customDomain": null,
+        "templateKey": "luxe-photo",
+        "templateVersion": 1,
+        "status": "published",
+        "branding": {
+            "primaryColor": "#111111",
+            "accentColor": "#c6a16e",
+            "neutralColor": "#f5f5f4"
+        },
+        "content": {
+            "hero": {
+                "eyebrow": "Luxury Photo Booth Experiences",
+                "headline": "Elevated moments. Modern memories.",
+                "subheadline": "Premium photo booth experiences for weddings, private parties, and brand events."
+            },
+            "about": {
+                "title": "Designed for unforgettable events",
+                "body": "We help hosts create stylish, seamless, and social-ready guest experiences."
+            },
+            "services": [
+                "Weddings",
+                "Corporate Events",
+                "Private Parties"
+            ],
+            "gallery": [
+                {
+                    "id": "img_001",
+                    "url": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_002",
+                    "url": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_003",
+                    "url": "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1200&auto=format&fit=crop"
+                }
+            ],
+            "cta": {
+                "label": "Book Now",
+                "href": "https://checkcherry.com"
+            }
+        },
+        "links": {
+            "instagram": "https://instagram.com",
+            "facebook": "https://facebook.com",
+            "tiktok": "https://tiktok.com"
+        }
+    }
+]
