@@ -194,7 +194,7 @@ export default function SiteEditorClient({ site, schema, templateKey }) {
                         >
 
                             {TemplateComponent ? (
-                                <TemplateComponent {...previewProps} />
+                                <TemplateComponent {...previewProps} isEditor />
                             ) : (
                                 <div className="p-8 text-black">
                                     Template not found

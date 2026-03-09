@@ -62,7 +62,13 @@ body {
   animation-play-state: paused;
 }
 
-[data-preview-section]:hover {
-  outline: 2px dashed rgba(255,255,255,0.3);
+.editor [data-preview-section]:hover {
+  outline: 2px dashed rgba(255,255,255,0.35);
   outline-offset: -2px;
+}
+
+.builder-mode [data-preview-section]:hover {
+  outline: 2px dashed rgba(255,255,255,0.35);
+  outline-offset: -3px;
+  cursor: pointer;
 }
