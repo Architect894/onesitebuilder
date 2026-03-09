@@ -1,102 +1,105 @@
-const luxePhotoSchema = {
-    key: "luxe-photo",
-    name: "Luxe Photo",
-    category: "photo-booth",
+const luxeModernSchema = {
+    key: "luxe-modern",
+    name: "Luxe Modern",
     sections: [
+
         {
-            id: "hero",
-            label: "Hero",
-            previewSection: "hero",
-            fields: [
-                {
-                    id: "content.hero.eyebrow",
-                    label: "Hero Eyebrow",
-                    type: "text",
-                    maxLength: 50,
-                    previewSection: "hero",
-                },
-                {
-                    id: "content.hero.headline",
-                    label: "Hero Headline",
-                    type: "text",
-                    maxLength: 80,
-                    previewSection: "hero",
-                },
-                {
-                    id: "content.hero.subheadline",
-                    label: "Hero Subheadline",
-                    type: "textarea",
-                    maxLength: 180,
-                    previewSection: "hero",
-                },
-            ],
-        },
-        {
-            id: "about",
-            label: "About",
-            previewSection: "about",
-            fields: [
-                {
-                    id: "content.about.title",
-                    label: "About Title",
-                    type: "text",
-                    maxLength: 80,
-                    previewSection: "about",
-                },
-                {
-                    id: "content.about.body",
-                    label: "About Body",
-                    type: "textarea",
-                    maxLength: 240,
-                    previewSection: "about",
-                },
-            ],
-        },
-        {
-            id: "cta",
-            label: "Call To Action",
-            previewSection: "hero",
-            fields: [
-                {
-                    id: "content.cta.label",
-                    label: "CTA Label",
-                    type: "text",
-                    maxLength: 24,
-                    previewSection: "hero",
-                },
-                {
-                    id: "content.cta.href",
-                    label: "CTA Link",
-                    type: "url",
-                    previewSection: "hero",
-                },
-            ],
-        },
-        {
-            id: "theme",
-            label: "Theme",
-            previewSection: "hero",
+            id: "branding",
+            label: "Branding",
             fields: [
                 {
                     id: "branding.primaryColor",
                     label: "Primary Color",
                     type: "color",
-                    previewSection: "hero",
                 },
                 {
                     id: "branding.accentColor",
                     label: "Accent Color",
                     type: "color",
-                    previewSection: "hero",
                 },
                 {
                     id: "branding.neutralColor",
-                    label: "Neutral Background (Services Card)",
+                    label: "Neutral Background",
                     type: "color",
+                },
+            ],
+        },
+
+        {
+            id: "hero",
+            label: "Hero Section",
+            fields: [
+                {
+                    id: "content.hero.logo",
+                    label: "Logo URL",
+                    type: "text",
+                    previewSection: "hero",
+                },
+                {
+                    id: "content.hero.eyebrow",
+                    label: "Eyebrow Text",
+                    type: "text",
+                    previewSection: "hero",
+                },
+                {
+                    id: "content.hero.headline",
+                    label: "Headline",
+                    type: "text",
+                    previewSection: "hero",
+                },
+                {
+                    id: "content.hero.subheadline",
+                    label: "Subheadline",
+                    type: "textarea",
+                    previewSection: "hero",
+                },
+            ],
+        },
+
+        {
+            id: "about",
+            label: "About Section",
+            fields: [
+                {
+                    id: "content.about.title",
+                    label: "Title",
+                    type: "text",
                     previewSection: "about",
                 },
+                {
+                    id: "content.about.body",
+                    label: "Description",
+                    type: "textarea",
+                    previewSection: "about",
+                },
+            ],
+        },
 
-                // ✅ NEW: Per-section background control
+        {
+            id: "cta",
+            label: "Call To Action",
+            fields: [
+                {
+                    id: "content.cta.label",
+                    label: "Button Label",
+                    type: "text",
+                    previewSection: "hero",
+                },
+                {
+                    id: "content.cta.href",
+                    label: "Button Link",
+                    type: "url",
+                    previewSection: "hero",
+                },
+            ],
+        },
+
+        /* ADD THIS BLOCK */
+
+        {
+            id: "sectionStyle",
+            label: "Section Backgrounds",
+            fields: [
                 {
                     id: "content.sectionStyle.hero.bg",
                     label: "Hero Background",
@@ -123,7 +126,8 @@ const luxePhotoSchema = {
                 },
             ],
         },
+
     ],
 };
 
-export default luxePhotoSchema;
+export default luxeModernSchema;

@@ -8,6 +8,27 @@ export default function FieldRenderer({ field, value, onChange, onFocusField }) 
         onFocusField?.(field);
     }
 
+    const isText = field.type === "text" || field.type === "url";
+    const isTextarea = field.type === "textarea";
+
+    // Treat any of these as a color input (lets you add schema types later without changing UI)
+    const isColor =
+        field.type === "color" ||
+        field.type === "sectionColor" ||
+        field.type === "bgColor";
+
+    const swatches = [
+        "#000000",
+        "#0b0b0b",
+        "#111111",
+        "#1a1a1a",
+        "#ffffff",
+        "#f5f5f5",
+        "#111827", // slate-ish
+        "#0f172a", // deep navy
+        "#1f2937", // neutral dark
+    ];
+
     return (
         <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5">
             <label className="block">
@@ -16,7 +37,7 @@ export default function FieldRenderer({ field, value, onChange, onFocusField }) 
                     {field.type}
                 </p>
 
-                {field.type === "text" || field.type === "url" ? (
+                {isText ? (
                     <input
                         type={field.type === "url" ? "url" : "text"}
                         value={value ?? ""}
@@ -26,7 +47,7 @@ export default function FieldRenderer({ field, value, onChange, onFocusField }) 
                     />
                 ) : null}
 
-                {field.type === "textarea" ? (
+                {isTextarea ? (
                     <textarea
                         value={value ?? ""}
                         onChange={(e) => onChange(field.id, e.target.value)}
@@ -35,16 +56,40 @@ export default function FieldRenderer({ field, value, onChange, onFocusField }) 
                     />
                 ) : null}
 
-                {field.type === "color" ? (
-                    <div className="mt-3 flex items-center gap-3">
-                        <input
-                            type="color"
-                            value={value ?? "#000000"}
-                            onChange={(e) => onChange(field.id, e.target.value)}
-                            onFocus={handleFocus}
-                            className="h-12 w-16 cursor-pointer rounded-lg border border-neutral-700 bg-transparent"
-                        />
-                        <div className="text-sm text-neutral-400">{value ?? "#000000"}</div>
+                {isColor ? (
+                    <div className="mt-3">
+                        <div className="flex items-center gap-3">
+                            <input
+                                type="color"
+                                value={value ?? "#000000"}
+                                onChange={(e) => onChange(field.id, e.target.value)}
+                                onFocus={handleFocus}
+                                className="h-12 w-16 cursor-pointer rounded-lg border border-neutral-700 bg-transparent"
+                            />
+                            <div className="text-sm text-neutral-400">{value ?? "#000000"}</div>
+
+                            {/* Preview chip */}
+                            <div
+                                className="ml-auto h-10 w-10 rounded-xl border border-neutral-700"
+                                style={{ backgroundColor: value ?? "#000000" }}
+                            />
+                        </div>
+
+                        {/* Quick swatches */}
+                        <div className="mt-3 flex flex-wrap gap-2">
+                            {swatches.map((c) => (
+                                <button
+                                    key={c}
+                                    type="button"
+                                    onClick={() => onChange(field.id, c)}
+                                    onFocus={handleFocus}
+                                    className="h-8 w-8 rounded-lg border border-neutral-700 transition hover:scale-[1.03]"
+                                    style={{ backgroundColor: c }}
+                                    aria-label={`Set color ${c}`}
+                                    title={c}
+                                />
+                            ))}
+                        </div>
                     </div>
                 ) : null}
 

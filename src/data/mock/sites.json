@@ -9,9 +9,9 @@
         "templateVersion": 1,
         "status": "published",
         "branding": {
-            "primaryColor": "#111111",
+            "primaryColor": "#9c8762",
             "accentColor": "#c6a16e",
-            "neutralColor": "#f5f5f4"
+            "neutralColor": "#000000"
         },
         "content": {
             "hero": {
@@ -45,6 +45,61 @@
             ],
             "cta": {
                 "label": "Book Now",
+                "href": "https://jacobelliottdev.com"
+            }
+        },
+        "links": {
+            "instagram": "https://instagram.com",
+            "facebook": "https://facebook.com",
+            "tiktok": "https://tiktok.com"
+        }
+    },
+    {
+        "id": "site_002",
+        "userId": "user_001",
+        "name": "Luxe Modern Demo",
+        "subdomain": "modern",
+        "customDomain": null,
+        "templateKey": "luxe-modern",
+        "templateVersion": 1,
+        "status": "published",
+        "branding": {
+            "primaryColor": "#9c8762",
+            "accentColor": "#e6b17e",
+            "neutralColor": "#000000"
+        },
+        "content": {
+            "hero": {
+                "logo": "/realphotobooth.png",
+                "eyebrow": "Modern Event Experiences",
+                "headline": "Interactive. Elegant. Unforgettable.",
+                "subheadline": "A modern event experience designed to elevate your celebration."
+            },
+            "about": {
+                "title": "Luxury experiences made simple",
+                "body": "Our modern photo booth experiences are designed for hosts who want something elegant and memorable."
+            },
+            "services": [
+                "Luxury Weddings",
+                "Corporate Activations",
+                "Private Celebrations"
+            ],
+            "gallery": [
+                {
+                    "id": "img_101",
+                    "url": "https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=1200"
+                },
+                {
+                    "id": "img_102",
+                    "url": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200"
+                },
+                {
+                    "id": "img_103",
+                    "url": "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=1200"
+                }
+            ],
+            "cta": {
+                "label": "Book Your Event",
                 "href": "https://jacobelliottdev.com"
             }
         },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import FieldRenderer from "@/components/editor/FieldRenderer";
 import { getNestedValue } from "@/lib/utils/get-nested-value";
 import { setNestedValue } from "@/lib/utils/set-nested-value";
@@ -11,58 +11,15 @@ import { updateSiteDraft } from "@/features/sites/services/update-site-draft";
 export default function SiteEditorClient({ site, schema, templateKey }) {
     const [draftSite, setDraftSite] = useState(site);
     const [savedSite, setSavedSite] = useState(site);
+    const [activeSection, setActiveSection] = useState(schema.sections[0]?.id);
     const [isSaving, setIsSaving] = useState(false);
-    const [saveMessage, setSaveMessage] = useState("");
-    const previewScrollRef = useRef(null);
+    const [viewport, setViewport] = useState("desktop");
+
+    const previewRef = useRef(null);
+    const controlsRef = useRef(null);
 
     function handleFieldChange(path, value) {
-        setSaveMessage("");
         setDraftSite((current) => setNestedValue(current, path, value));
-    }
-
-    function handleFieldFocus(field) {
-        const targetSection = field.previewSection;
-        if (!targetSection || !previewScrollRef.current) return;
-
-        const target = previewScrollRef.current.querySelector(
-            `[data-preview-section="${targetSection}"]`
-        );
-
-        if (!target) return;
-
-        target.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
-    }
-
-    const hasUnsavedChanges =
-        JSON.stringify(draftSite) !== JSON.stringify(savedSite);
-
-    async function handleSaveDraft() {
-        try {
-            setIsSaving(true);
-            setSaveMessage("");
-
-            const result = await updateSiteDraft(draftSite.id, draftSite);
-
-            if (result.success) {
-                setSavedSite(draftSite);
-                setSaveMessage("Draft saved.");
-            } else {
-                setSaveMessage("Save failed.");
-            }
-        } catch (error) {
-            console.error(error);
-            setSaveMessage("Something went wrong.");
-        } finally {
-            setIsSaving(false);
-        }
-    }
-
-    function handleResetChanges() {
-        setDraftSite(savedSite);
-        setSaveMessage("Changes reset.");
     }
 
     const previewProps = useMemo(() => {
@@ -72,109 +29,210 @@ export default function SiteEditorClient({ site, schema, templateKey }) {
     const templateEntry = templateRegistry[templateKey];
     const TemplateComponent = templateEntry?.component;
 
+    const hasUnsavedChanges =
+        JSON.stringify(draftSite) !== JSON.stringify(savedSite);
+
+    async function handleSaveDraft() {
+        setIsSaving(true);
+
+        const result = await updateSiteDraft(draftSite.id, draftSite);
+
+        if (result.success) {
+            setSavedSite(draftSite);
+        }
+
+        setIsSaving(false);
+    }
+
+    const activeSectionSchema = schema.sections.find(
+        (s) => s.id === activeSection
+    );
+
+    const viewportWidths = {
+        desktop: "w-[1400px]",
+        tablet: "w-[768px]",
+        mobile: "w-[390px]",
+    };
+
+    // Auto-scroll controls panel when switching sections
+    useEffect(() => {
+        controlsRef.current?.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }, [activeSection]);
+
+    function handlePreviewClick(e) {
+        const section = e.target.closest("[data-preview-section]");
+        if (!section) return;
+
+        const id = section.getAttribute("data-preview-section");
+        if (!id) return;
+
+        setActiveSection(id);
+
+        // Pulse highlight animation
+        section.animate(
+            [
+                { boxShadow: "0 0 0 0 rgba(255,255,255,0)" },
+                { boxShadow: "0 0 0 4px rgba(255,255,255,0.25)" },
+                { boxShadow: "0 0 0 0 rgba(255,255,255,0)" },
+            ],
+            { duration: 650, easing: "ease-out" }
+        );
+    }
+
     return (
-        <main className="min-h-screen bg-neutral-950 text-white">
-            <div className="border-b border-neutral-800 bg-neutral-950/95 backdrop-blur">
-                <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-6 px-6 py-5">
-                    <div>
-                        <p className="text-sm uppercase tracking-[0.2em] text-neutral-400">
-                            Site Editor
-                        </p>
-                        <h1 className="mt-2 text-3xl font-semibold">{draftSite.name}</h1>
-                        <p className="mt-2 text-sm text-neutral-400">
-                            Template: {schema.name} ({schema.key})
-                        </p>
-                    </div>
+        <main className="flex h-screen flex-col bg-neutral-950 text-white">
 
-                    <div className="flex items-center gap-3">
-                        <div className="text-sm text-neutral-400">
-                            {hasUnsavedChanges ? "Unsaved changes" : "All changes saved"}
-                        </div>
+            {/* TOP BAR */}
 
-                        <button
-                            type="button"
-                            onClick={handleResetChanges}
-                            disabled={!hasUnsavedChanges || isSaving}
-                            className="rounded-full border border-neutral-700 px-4 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-40"
-                        >
-                            Reset
-                        </button>
+            <div className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
 
-                        <button
-                            type="button"
-                            onClick={handleSaveDraft}
-                            disabled={!hasUnsavedChanges || isSaving}
-                            className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black disabled:cursor-not-allowed disabled:opacity-40"
-                        >
-                            {isSaving ? "Saving..." : "Save Draft"}
-                        </button>
-                    </div>
+                <div>
+                    <h1 className="text-lg font-semibold">{draftSite.name}</h1>
+                    <p className="text-xs text-neutral-400">
+                        Template: {schema.name}
+                    </p>
                 </div>
 
-                {saveMessage ? (
-                    <div className="mx-auto max-w-[1600px] px-6 pb-4 text-sm text-neutral-400">
-                        {saveMessage}
-                    </div>
-                ) : null}
+                {/* VIEWPORT CONTROLS */}
+
+                <div className="flex items-center gap-2">
+
+                    {["desktop", "tablet", "mobile"].map((v) => (
+                        <button
+                            key={v}
+                            onClick={() => setViewport(v)}
+                            className={`px-3 py-1 rounded text-sm transition ${viewport === v
+                                    ? "bg-white text-black"
+                                    : "bg-neutral-800 hover:bg-neutral-700"
+                                }`}
+                        >
+                            {v.charAt(0).toUpperCase() + v.slice(1)}
+                        </button>
+                    ))}
+
+                </div>
+
+                {/* SAVE CONTROLS */}
+
+                <div className="flex items-center gap-3">
+
+                    <button
+                        onClick={() => setDraftSite(savedSite)}
+                        disabled={!hasUnsavedChanges}
+                        className="rounded-full border border-neutral-700 px-4 py-2 text-sm disabled:opacity-40"
+                    >
+                        Reset
+                    </button>
+
+                    <button
+                        onClick={handleSaveDraft}
+                        disabled={!hasUnsavedChanges || isSaving}
+                        className="rounded-full bg-white px-5 py-2 text-sm font-medium text-black disabled:opacity-40"
+                    >
+                        {isSaving ? "Saving..." : "Save"}
+                    </button>
+
+                </div>
             </div>
 
-            <div className="mx-auto max-w-[1600px] px-6 py-10">
-                <div className="grid gap-10 xl:grid-cols-[420px_minmax(0,1fr)] xl:items-start">
-                    <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-8">
-                        <h2 className="text-2xl font-semibold">Editor</h2>
+            {/* MAIN EDITOR GRID */}
 
-                        <div className="mt-8 space-y-8">
-                            {schema.sections.map((section) => (
-                                <div key={section.id}>
-                                    <div className="mb-4">
-                                        <h3 className="text-lg font-medium text-white">
-                                            {section.label}
-                                        </h3>
-                                    </div>
+            <div className="grid flex-1 grid-cols-[240px_1fr_340px]">
 
-                                    <div className="space-y-5">
-                                        {section.fields.map((field) => (
-                                            <FieldRenderer
-                                                key={field.id}
-                                                field={field}
-                                                value={getNestedValue(draftSite, field.id)}
-                                                onChange={handleFieldChange}
-                                                onFocusField={handleFieldFocus}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
+                {/* LEFT SIDEBAR */}
+
+                <aside className="border-r border-neutral-800 bg-neutral-900 p-4">
+
+                    <h2 className="mb-4 text-sm font-semibold text-neutral-400">
+                        Sections
+                    </h2>
+
+                    <div className="space-y-2">
+
+                        {schema.sections.map((section) => (
+                            <button
+                                key={section.id}
+                                onClick={() => setActiveSection(section.id)}
+                                className={`w-full rounded-lg px-3 py-2 text-left text-sm transition ${activeSection === section.id
+                                        ? "bg-white text-black"
+                                        : "hover:bg-neutral-800"
+                                    }`}
+                            >
+                                {section.label}
+                            </button>
+                        ))}
+
+                    </div>
+
+                </aside>
+
+                {/* CENTER PREVIEW */}
+
+                <section className="flex items-center justify-center overflow-auto bg-neutral-800 p-10">
+
+                    <div
+                        className={`${viewportWidths[viewport]} max-w-[95vw] overflow-hidden rounded-[24px] border border-neutral-300 shadow-2xl transition-all`}
+                    >
+
+                        {/* Browser bar */}
+
+                        <div className="flex gap-2 border-b border-neutral-200 bg-neutral-100 px-4 py-3">
+                            <span className="h-3 w-3 rounded-full bg-neutral-300" />
+                            <span className="h-3 w-3 rounded-full bg-neutral-300" />
+                            <span className="h-3 w-3 rounded-full bg-neutral-300" />
                         </div>
-                    </section>
 
-                    <section className="xl:sticky xl:top-6">
-                        <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-4">
-                            <div className="mb-4 flex items-center justify-between px-4 pt-2">
-                                <h2 className="text-2xl font-semibold">Live Preview</h2>
-                                <p className="text-sm text-neutral-400">Draft</p>
-                            </div>
+                        {/* Live preview */}
 
-                            <div className="overflow-hidden rounded-2xl bg-neutral-800 p-3">
-                                <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[28px] border border-neutral-300 bg-white shadow-2xl">
-                                    <div className="flex items-center gap-2 border-b border-neutral-200 bg-neutral-100 px-4 py-3">
-                                        <span className="h-3 w-3 rounded-full bg-neutral-300" />
-                                        <span className="h-3 w-3 rounded-full bg-neutral-300" />
-                                        <span className="h-3 w-3 rounded-full bg-neutral-300" />
-                                    </div>
+                        <div
+                            ref={previewRef}
+                            className="h-[80vh] w-full overflow-y-auto [&_[data-preview-section]]:cursor-pointer"
+                            onClick={handlePreviewClick}
+                        >
 
-                                    <div ref={previewScrollRef} className="h-[75vh] overflow-y-auto">
-                                        {TemplateComponent ? (
-                                            <TemplateComponent {...previewProps} />
-                                        ) : (
-                                            <div className="p-8 text-black">Template not found.</div>
-                                        )}
-                                    </div>
+                            {TemplateComponent ? (
+                                <TemplateComponent {...previewProps} />
+                            ) : (
+                                <div className="p-8 text-black">
+                                    Template not found
                                 </div>
-                            </div>
+                            )}
+
                         </div>
-                    </section>
-                </div>
+
+                    </div>
+
+                </section>
+
+                {/* RIGHT SIDEBAR */}
+
+                <aside
+                    ref={controlsRef}
+                    className="border-l border-neutral-800 bg-neutral-900 p-6 overflow-y-auto"
+                >
+
+                    <h2 className="text-lg font-semibold">
+                        {activeSectionSchema?.label}
+                    </h2>
+
+                    <div className="mt-6 space-y-5">
+
+                        {activeSectionSchema?.fields.map((field) => (
+                            <FieldRenderer
+                                key={field.id}
+                                field={field}
+                                value={getNestedValue(draftSite, field.id)}
+                                onChange={handleFieldChange}
+                            />
+                        ))}
+
+                    </div>
+
+                </aside>
+
             </div>
         </main>
     );

@@ -61,3 +61,8 @@ body {
 .group:hover .sheen {
   animation-play-state: paused;
 }
+
+[data-preview-section]:hover {
+  outline: 2px dashed rgba(255,255,255,0.3);
+  outline-offset: -2px;
+}
