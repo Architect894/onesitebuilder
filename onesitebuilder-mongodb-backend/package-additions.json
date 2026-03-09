@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "jose": "^6.1.0",
+    "mongodb": "^6.16.0",
+    "zod": "^3.24.2"
+  }
+}
