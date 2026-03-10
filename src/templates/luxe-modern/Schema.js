@@ -2,131 +2,203 @@ const luxeModernSchema = {
     key: "luxe-modern",
     name: "Luxe Modern",
     sections: [
-
-        {
-            id: "branding",
-            label: "Branding",
-            fields: [
-                {
-                    id: "branding.primaryColor",
-                    label: "Primary Color",
-                    type: "color",
-                },
-                {
-                    id: "branding.accentColor",
-                    label: "Accent Color",
-                    type: "color",
-                },
-                {
-                    id: "branding.neutralColor",
-                    label: "Neutral Background",
-                    type: "color",
-                },
-            ],
-        },
-
         {
             id: "hero",
             label: "Hero Section",
             fields: [
                 {
-                    id: "content.hero.logo",
-                    label: "Logo URL",
-                    type: "text",
-                    previewSection: "hero",
+                    id: "content.sectionStyle.hero.bg",
+                    label: "Background Ambient",
+                    type: "ambientColor",
+                    default: "#000000",
+                },
+                {
+                    id: "content.sectionStyle.hero.accentColor",
+                    label: "Accent Light Color",
+                    type: "color",
+                    default: "#d4a574",
+                },
+                {
+                    id: "content.cta.color",
+                    label: "Button Background",
+                    type: "buttonColor",
+                    default: "#d4a574",
+                },
+                {
+                    id: "content.cta.textColor",
+                    label: "Button Text Color",
+                    type: "textColor",
+                    default: "#ffffff",
+                },
+                {
+                    id: "content.hero.textColor",
+                    label: "Text Color",
+                    type: "textColor",
+                    default: "#ffffff",
                 },
                 {
                     id: "content.hero.eyebrow",
-                    label: "Eyebrow Text",
+                    label: "Hero Eyebrow",
                     type: "text",
-                    previewSection: "hero",
+                    maxLength: 50,
                 },
                 {
                     id: "content.hero.headline",
-                    label: "Headline",
+                    label: "Hero Headline",
                     type: "text",
-                    previewSection: "hero",
+                    maxLength: 80,
                 },
                 {
                     id: "content.hero.subheadline",
-                    label: "Subheadline",
+                    label: "Hero Subheadline",
                     type: "textarea",
-                    previewSection: "hero",
+                    maxLength: 180,
+                },
+                {
+                    id: "content.cta.label",
+                    label: "CTA Button Label",
+                    type: "text",
+                    maxLength: 24,
+                },
+                {
+                    id: "content.cta.href",
+                    label: "CTA Button Link",
+                    type: "url",
                 },
             ],
         },
-
         {
             id: "about",
             label: "About Section",
             fields: [
                 {
+                    id: "content.sectionStyle.about.bg",
+                    label: "Background Ambient",
+                    type: "ambientColor",
+                    default: "#1a1a1a",
+                },
+                {
+                    id: "content.sectionStyle.about.accentColor",
+                    label: "Accent Light Color",
+                    type: "color",
+                    default: "#d4a574",
+                },
+                {
+                    id: "content.about.headingColor",
+                    label: "Heading Color",
+                    type: "textColor",
+                    default: "#ffffff",
+                },
+                {
+                    id: "content.about.bodyColor",
+                    label: "Body Text Color",
+                    type: "textColor",
+                    default: "#d4d4d4",
+                },
+                {
                     id: "content.about.title",
-                    label: "Title",
+                    label: "About Title",
                     type: "text",
-                    previewSection: "about",
+                    maxLength: 80,
                 },
                 {
                     id: "content.about.body",
-                    label: "Description",
+                    label: "About Body",
                     type: "textarea",
-                    previewSection: "about",
+                    maxLength: 240,
                 },
             ],
         },
-
         {
-            id: "cta",
-            label: "Call To Action",
+            id: "gallery",
+            label: "Gallery Section",
             fields: [
-                {
-                    id: "content.cta.label",
-                    label: "Button Label",
-                    type: "text",
-                    previewSection: "hero",
-                },
-                {
-                    id: "content.cta.href",
-                    label: "Button Link",
-                    type: "url",
-                    previewSection: "hero",
-                },
-            ],
-        },
-
-        /* ADD THIS BLOCK */
-
-        {
-            id: "sectionStyle",
-            label: "Section Backgrounds",
-            fields: [
-                {
-                    id: "content.sectionStyle.hero.bg",
-                    label: "Hero Background",
-                    type: "color",
-                    previewSection: "hero",
-                },
-                {
-                    id: "content.sectionStyle.about.bg",
-                    label: "About Background",
-                    type: "color",
-                    previewSection: "about",
-                },
                 {
                     id: "content.sectionStyle.gallery.bg",
-                    label: "Gallery Background",
-                    type: "color",
-                    previewSection: "gallery",
+                    label: "Background Ambient",
+                    type: "ambientColor",
+                    default: "#000000",
                 },
                 {
-                    id: "content.sectionStyle.footer.bg",
-                    label: "Footer Background",
+                    id: "content.sectionStyle.gallery.accentColor",
+                    label: "Accent Light Color",
                     type: "color",
-                    previewSection: "footer",
+                    default: "#d4a574",
                 },
             ],
         },
-
+        {
+            id: "branding",
+            label: "Branding Colors",
+            fields: [
+                {
+                    id: "branding.primary",
+                    label: "Primary Color",
+                    type: "color",
+                    default: "#d4a574",
+                },
+                {
+                    id: "branding.secondary",
+                    label: "Secondary Color",
+                    type: "color",
+                    default: "#f1c886",
+                },
+                {
+                    id: "branding.accent",
+                    label: "Accent Color",
+                    type: "color",
+                    default: "#9c8762",
+                },
+            ],
+        },
+        {
+            id: "contact",
+            label: "Contact Information",
+            fields: [
+                {
+                    id: "content.contact.phone",
+                    label: "Phone Number",
+                    type: "text",
+                },
+                {
+                    id: "content.contact.email",
+                    label: "Email Address",
+                    type: "text",
+                },
+                {
+                    id: "content.contact.location",
+                    label: "Location/Service Area",
+                    type: "text",
+                    maxLength: 100,
+                },
+            ],
+        },
+        {
+            id: "social",
+            label: "Social Links",
+            fields: [
+                {
+                    id: "content.social.instagram",
+                    label: "Instagram URL",
+                    type: "url",
+                },
+                {
+                    id: "content.social.tiktok",
+                    label: "TikTok URL",
+                    type: "url",
+                },
+                {
+                    id: "content.social.facebook",
+                    label: "Facebook URL",
+                    type: "url",
+                },
+                {
+                    id: "content.social.youtube",
+                    label: "YouTube URL",
+                    type: "url",
+                },
+            ],
+        },
     ],
 };
 

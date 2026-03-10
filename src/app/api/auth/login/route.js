@@ -1,47 +1,70 @@
 import { getCollection } from "@/lib/db";
-import { loginSchema } from "@/lib/validation/auth";
-import { verifyPassword } from "@/lib/auth/password";
-import { signSessionToken } from "@/lib/auth/session";
-import { setSessionCookie } from "@/lib/auth/cookies";
-import { serializeUser } from "@/lib/serializers/site";
+import CryptoJS from "crypto-js";
+
+// Verify password using SHA256 with salt
+function verifyPassword(password, hashedPassword) {
+  const parts = hashedPassword.split(':');
+  if (parts.length !== 2) return false;
+  
+  const salt = parts[0];
+  const hash = parts[1];
+  const computedHash = CryptoJS.SHA256(password + salt).toString();
+  return computedHash === hash;
+}
 
 export async function POST(request) {
   try {
-    const payload = loginSchema.parse(await request.json());
+    const body = await request.json();
+    console.log("[Login] Received:", body);
+    
+    // Manual validation
+    const { email, password } = body;
+    
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      return Response.json({ error: "Invalid email" }, { status: 400 });
+    }
+    
+    if (!password || typeof password !== 'string' || password.length < 1) {
+      return Response.json({ error: "Password is required" }, { status: 400 });
+    }
+    
+    const normalizedEmail = email.trim().toLowerCase();
+
+    console.log("[Login] Validated");
+    
+    // Find user
     const users = await getCollection("users");
-
-    const user = await users.findOne({ email: payload.email });
+    const user = await users.findOne({ email: normalizedEmail });
+    
     if (!user) {
-      return Response.json({ error: "Invalid credentials." }, { status: 401 });
+      return Response.json({ error: "Invalid email or password." }, { status: 401 });
     }
-
-    const isValid = await verifyPassword(payload.password, user.passwordHash);
-    if (!isValid) {
-      return Response.json({ error: "Invalid credentials." }, { status: 401 });
+    
+    // Verify password using SHA256
+    const isPasswordValid = verifyPassword(password, user.password);
+    if (!isPasswordValid) {
+      return Response.json({ error: "Invalid email or password." }, { status: 401 });
     }
-
+    
+    // Update last login
     await users.updateOne(
       { _id: user._id },
-      { $set: { lastLoginAt: new Date(), updatedAt: new Date() } }
+      { $set: { lastLoginAt: new Date() } }
     );
 
-    const token = await signSessionToken({
-      sub: String(user._id),
-      email: user.email,
-      role: user.role,
-    });
-
-    await setSessionCookie(token);
-
-    return Response.json({
-      user: serializeUser({
-        ...user,
-        passwordHash: undefined,
-      }),
-    });
+    console.log("[Login] User authenticated:", user._id);
+    
+    return Response.json({ 
+      user: { 
+        id: String(user._id),
+        email: user.email,
+        name: user.name
+      } 
+    }, { status: 200 });
   } catch (error) {
+    console.error("[Login Error]", error);
     return Response.json(
-      { error: error?.issues?.[0]?.message || "Unable to log in." },
+      { error: error?.message || "Unable to log in." },
       { status: 400 }
     );
   }

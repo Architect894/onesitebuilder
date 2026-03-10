@@ -46,6 +46,17 @@
             "cta": {
                 "label": "Book Now",
                 "href": "https://jacobelliottdev.com"
+            },
+            "contact": {
+                "phone": "+1 (555) 123-4567",
+                "email": "hello@luxebooths.com",
+                "location": "San Francisco, CA"
+            },
+            "social": {
+                "instagram": "https://instagram.com/luxebooths",
+                "tiktok": "https://tiktok.com/@luxebooths",
+                "facebook": "https://facebook.com/luxebooths",
+                "youtube": "https://youtube.com/@luxebooths"
             }
         },
         "links": {
@@ -101,6 +112,110 @@
             "cta": {
                 "label": "Book Your Event",
                 "href": "https://jacobelliottdev.com"
+            },
+            "contact": {
+                "phone": "+1 (555) 234-5678",
+                "email": "bookings@luxemodern.com",
+                "location": "Los Angeles, CA"
+            },
+            "social": {
+                "instagram": "https://instagram.com/luxemodern",
+                "tiktok": "https://tiktok.com/@luxemodern",
+                "facebook": "https://facebook.com/luxemodern",
+                "youtube": "https://youtube.com/@luxemodern"
+            }
+        },
+        "links": {
+            "instagram": "https://instagram.com",
+            "facebook": "https://facebook.com",
+            "tiktok": "https://tiktok.com"
+        }
+    },
+    {
+        "id": "site_003",
+        "userId": "user_001",
+        "name": "Luxe Classic Demo",
+        "subdomain": "classic",
+        "customDomain": null,
+        "templateKey": "luxe-classic",
+        "templateVersion": 1,
+        "status": "published",
+        "branding": {
+            "primaryColor": "#d4a574",
+            "accentColor": "#f1c886",
+            "neutralColor": "#000000"
+        },
+        "content": {
+            "hero": {
+                "logo": "/realphotobooth.png",
+                "eyebrow": "Timeless Elegance",
+                "headline": "Where Classic Meets Modern",
+                "subheadline": "Experience the epitome of refined luxury with our curated collection of timeless designs and elegant experiences."
+            },
+            "about": {
+                "title": "Refined Luxury Redefined",
+                "body": "Our classic collection represents the pinnacle of sophisticated design, blending timeless elegance with contemporary sensibilities. Each experience is carefully crafted to create lasting memories."
+            },
+            "services": [
+                "Premium Consultations",
+                "Bespoke Design Services",
+                "Exclusive VIP Events",
+                "Curated Collections",
+                "Personal Styling",
+                "Luxury Experiences"
+            ],
+            "gallery": [
+                {
+                    "id": "img_201",
+                    "url": "https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_202",
+                    "url": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_203",
+                    "url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_204",
+                    "url": "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_205",
+                    "url": "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_206",
+                    "url": "https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_207",
+                    "url": "https://images.unsplash.com/photo-1483389127117-b6a2102724ae?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_208",
+                    "url": "https://images.unsplash.com/photo-1537457984351-c54f5d1cd1cc?q=80&w=1200&auto=format&fit=crop"
+                },
+                {
+                    "id": "img_209",
+                    "url": "https://images.unsplash.com/photo-1508939773537-c85b6b47f67f?q=80&w=1200&auto=format&fit=crop"
+                }
+            ],
+            "cta": {
+                "label": "Discover More",
+                "href": "https://jacobelliottdev.com"
+            },
+            "contact": {
+                "phone": "+1 (555) 345-6789",
+                "email": "concierge@luxeclassic.com",
+                "location": "New York, NY"
+            },
+            "social": {
+                "instagram": "https://instagram.com/luxeclassic",
+                "tiktok": "https://tiktok.com/@luxeclassic",
+                "facebook": "https://facebook.com/luxeclassic",
+                "youtube": "https://youtube.com/@luxeclassic"
             }
         },
         "links": {

@@ -1,99 +1,130 @@
 "use client";
 
-export default function FieldRenderer({ field, value, onChange, onFocusField }) {
-    const baseInputClasses =
-        "mt-2 w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm text-white outline-none transition focus:border-neutral-500";
-
-    function handleFocus() {
-        onFocusField?.(field);
-    }
-
+export default function FieldRenderer({ field, value, onChange, fieldInputAttr }) {
     const isText = field.type === "text" || field.type === "url";
     const isTextarea = field.type === "textarea";
-
-    // Treat any of these as a color input (lets you add schema types later without changing UI)
     const isColor =
         field.type === "color" ||
         field.type === "sectionColor" ||
-        field.type === "bgColor";
+        field.type === "bgColor" ||
+        field.type === "buttonColor" ||
+        field.type === "textColor";
+    
+    const isAmbientColor = field.type === "ambientColor";
 
     const swatches = [
         "#000000",
-        "#0b0b0b",
-        "#111111",
-        "#1a1a1a",
         "#ffffff",
+        "#1a1a1a",
         "#f5f5f5",
-        "#3a3a41", // gunmetal-ish
-        "#4a4a52", // gunmetal medium
-        "#5a5a62", // gunmetal light
+        "#d4a574",
+        "#f1c886",
+        "#9c8762",
+        "#e6b17e",
+    ];
+
+    const ambientColors = [
+        { name: "Pure Black", value: "#000000" },
+        { name: "Deep Charcoal", value: "#0a0a0a" },
+        { name: "Midnight", value: "#0f0f1a" },
+        { name: "Dark Navy", value: "#0d1117" },
+        { name: "Deep Slate", value: "#1a1a2e" },
+        { name: "Dark Warm", value: "#1a1410" },
+        { name: "Deep Forest", value: "#0a1612" },
+        { name: "Dark Plum", value: "#15101a" },
+        { name: "Deep Charcoal Alt", value: "#1a1a1a" },
+        { name: "Almost Black", value: "#050505" },
     ];
 
     return (
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-5">
+        <div className="space-y-3">
             <label className="block">
-                <p className="text-sm font-medium text-white">{field.label}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-neutral-500">
-                    {field.type}
-                </p>
+                <p className="text-sm font-semibold text-white mb-2">{field.label}</p>
 
-                {isText ? (
+                {isText && (
                     <input
                         type={field.type === "url" ? "url" : "text"}
                         value={value ?? ""}
                         onChange={(e) => onChange(field.id, e.target.value)}
-                        onFocus={handleFocus}
-                        className={baseInputClasses}
+                        placeholder={field.label}
+                        className="w-full px-3 py-3 text-base bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white font-medium hover:border-neutral-500 focus:border-blue-500 focus:outline-none transition"
+                        {...(fieldInputAttr ? { [fieldInputAttr.split("=")[0]]: fieldInputAttr.split("=")[1].replace(/"/g, "") } : {})}
                     />
-                ) : null}
+                )}
 
-                {isTextarea ? (
+                {isTextarea && (
                     <textarea
                         value={value ?? ""}
                         onChange={(e) => onChange(field.id, e.target.value)}
-                        onFocus={handleFocus}
-                        className={`${baseInputClasses} min-h-[120px] resize-y`}
+                        placeholder={field.label}
+                        rows={5}
+                        className="w-full px-3 py-3 text-base bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white resize-none hover:border-neutral-500 focus:border-blue-500 focus:outline-none transition"
                     />
-                ) : null}
+                )}
 
-                {isColor ? (
-                    <div className="mt-3">
-                        <div className="flex items-center gap-3">
+                {isColor && (
+                    <div className="space-y-3">
+                        <div className="flex gap-3 items-center">
                             <input
                                 type="color"
                                 value={value ?? "#000000"}
                                 onChange={(e) => onChange(field.id, e.target.value)}
-                                onFocus={handleFocus}
-                                className="h-12 w-16 cursor-pointer rounded-lg border border-neutral-700 bg-transparent"
+                                className="h-14 w-16 cursor-pointer rounded-lg border-2 border-neutral-600 hover:border-neutral-500 transition"
                             />
-                            <div className="text-sm text-neutral-400">{value ?? "#000000"}</div>
-
-                            {/* Preview chip */}
+                            <div className="flex-1">
+                                <input
+                                    type="text"
+                                    value={value ?? "#000000"}
+                                    onChange={(e) => onChange(field.id, e.target.value)}
+                                    className="w-full px-3 py-3 text-base bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white font-mono hover:border-neutral-500 focus:border-blue-500 focus:outline-none transition"
+                                />
+                            </div>
                             <div
-                                className="ml-auto h-10 w-10 rounded-xl border border-neutral-700"
+                                className="h-14 w-14 rounded-lg border-2 border-neutral-600 flex-shrink-0"
                                 style={{ backgroundColor: value ?? "#000000" }}
                             />
                         </div>
 
                         {/* Quick swatches */}
-                        <div className="mt-3 flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2">
                             {swatches.map((c) => (
                                 <button
                                     key={c}
                                     type="button"
                                     onClick={() => onChange(field.id, c)}
-                                    onFocus={handleFocus}
-                                    className="h-8 w-8 rounded-lg border border-neutral-700 transition hover:scale-[1.03]"
+                                    className="h-10 w-10 rounded-lg border-2 border-neutral-600 hover:border-white transition hover:scale-110"
                                     style={{ backgroundColor: c }}
-                                    aria-label={`Set color ${c}`}
                                     title={c}
                                 />
                             ))}
                         </div>
                     </div>
-                ) : null}
+                )}
 
-                <p className="mt-3 text-xs text-neutral-600">{field.id}</p>
+                {isAmbientColor && (
+                    <div className="space-y-2 mb-4">
+                        <div className="grid grid-cols-5 gap-2">
+                            {ambientColors.map((color) => (
+                                <button
+                                    key={color.value}
+                                    type="button"
+                                    onClick={() => onChange(field.id, color.value)}
+                                    className={`group relative h-12 rounded-lg border-2 transition-all hover:scale-105 ${
+                                        value === color.value
+                                            ? "border-blue-500 ring-2 ring-blue-500"
+                                            : "border-neutral-600 hover:border-neutral-500"
+                                    }`}
+                                    style={{ backgroundColor: color.value }}
+                                    title={color.name}
+                                >
+                                    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-white opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none">
+                                        {color.name}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </label>
         </div>
     );

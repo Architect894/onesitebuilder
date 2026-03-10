@@ -31,7 +31,7 @@ export const siteCreateSchema = z.object({
   name: z.string().trim().min(2).max(100),
   subdomain: z.string().trim().toLowerCase().regex(/^[a-z0-9-]{3,40}$/),
   customDomain: urlOrNull.optional().default(null),
-  templateKey: z.enum(["luxe-photo", "luxe-modern"]),
+  templateKey: z.enum(["luxe-photo", "luxe-modern", "luxe-classic"]),
   status: z.enum(["draft", "published"]).optional().default("draft"),
   branding: z.object({
     primaryColor: hexColor,

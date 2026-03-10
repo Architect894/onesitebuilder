@@ -1,8 +1,7 @@
-const luxePhotoSchema = {
-    key: "luxe-photo",
-    name: "Luxe Photo",
-    category: "photo-booth",
-    description: "A photography-focused template with full-screen hero, masonry gallery, and modern design",
+const luxeClassicSchema = {
+    key: "luxe-classic",
+    name: "Luxe Classic",
+    category: "classic",
     sections: [
         {
             id: "hero",
@@ -10,15 +9,27 @@ const luxePhotoSchema = {
             fields: [
                 {
                     id: "content.sectionStyle.hero.bg",
-                    label: "Background Color",
-                    type: "color",
+                    label: "Background Ambient",
+                    type: "ambientColor",
                     default: "#000000",
                 },
                 {
                     id: "content.sectionStyle.hero.accentColor",
-                    label: "Accent Color",
+                    label: "Accent Light Color",
                     type: "color",
                     default: "#d4a574",
+                },
+                {
+                    id: "content.cta.color",
+                    label: "Button Background",
+                    type: "buttonColor",
+                    default: "#d4a574",
+                },
+                {
+                    id: "content.cta.textColor",
+                    label: "Button Text Color",
+                    type: "textColor",
+                    default: "#ffffff",
                 },
                 {
                     id: "content.hero.textColor",
@@ -28,7 +39,7 @@ const luxePhotoSchema = {
                 },
                 {
                     id: "content.hero.eyebrow",
-                    label: "Eyebrow Text",
+                    label: "Hero Eyebrow",
                     type: "text",
                     maxLength: 50,
                 },
@@ -44,6 +55,17 @@ const luxePhotoSchema = {
                     type: "textarea",
                     maxLength: 180,
                 },
+                {
+                    id: "content.cta.label",
+                    label: "CTA Button Label",
+                    type: "text",
+                    maxLength: 24,
+                },
+                {
+                    id: "content.cta.href",
+                    label: "CTA Button Link",
+                    type: "url",
+                },
             ],
         },
         {
@@ -52,21 +74,15 @@ const luxePhotoSchema = {
             fields: [
                 {
                     id: "content.sectionStyle.about.bg",
-                    label: "Background Color",
+                    label: "Background Ambient",
+                    type: "ambientColor",
+                    default: "#1a1a1a",
+                },
+                {
+                    id: "content.sectionStyle.about.accentColor",
+                    label: "Accent Light Color",
                     type: "color",
-                    default: "#0a0a0a",
-                },
-                {
-                    id: "content.about.title",
-                    label: "Section Title",
-                    type: "text",
-                    maxLength: 80,
-                },
-                {
-                    id: "content.about.body",
-                    label: "Description",
-                    type: "textarea",
-                    maxLength: 300,
+                    default: "#d4a574",
                 },
                 {
                     id: "content.about.headingColor",
@@ -80,18 +96,17 @@ const luxePhotoSchema = {
                     type: "textColor",
                     default: "#d4d4d4",
                 },
-            ],
-        },
-        {
-            id: "services",
-            label: "Services",
-            fields: [
                 {
-                    id: "content.services",
-                    label: "Service List",
-                    type: "array",
-                    itemType: "text",
-                    maxItems: 6,
+                    id: "content.about.title",
+                    label: "About Title",
+                    type: "text",
+                    maxLength: 80,
+                },
+                {
+                    id: "content.about.body",
+                    label: "About Body",
+                    type: "textarea",
+                    maxLength: 240,
                 },
             ],
         },
@@ -101,45 +116,39 @@ const luxePhotoSchema = {
             fields: [
                 {
                     id: "content.sectionStyle.gallery.bg",
-                    label: "Background Color",
-                    type: "color",
+                    label: "Background Ambient",
+                    type: "ambientColor",
                     default: "#000000",
                 },
                 {
-                    id: "content.gallery",
-                    label: "Gallery Images",
-                    type: "array",
-                    itemType: "image",
-                    description: "Upload 6+ images for best masonry layout",
+                    id: "content.sectionStyle.gallery.accentColor",
+                    label: "Accent Light Color",
+                    type: "color",
+                    default: "#d4a574",
                 },
             ],
         },
         {
-            id: "cta",
-            label: "Call to Action",
+            id: "branding",
+            label: "Branding Colors",
             fields: [
                 {
-                    id: "content.cta.label",
-                    label: "Button Text",
-                    type: "text",
-                    maxLength: 24,
-                },
-                {
-                    id: "content.cta.href",
-                    label: "Button Link",
-                    type: "url",
-                },
-                {
-                    id: "content.cta.color",
-                    label: "Button Background Color",
+                    id: "branding.primary",
+                    label: "Primary Color",
                     type: "color",
                     default: "#d4a574",
                 },
                 {
-                    id: "content.cta.textColor",
-                    label: "Button Text Color",
-                    type: "textColor",
-                    default: "#ffffff",
+                    id: "branding.secondary",
+                    label: "Secondary Color",
+                    type: "color",
+                    default: "#f1c886",
+                },
+                {
+                    id: "branding.accent",
+                    label: "Accent Color",
+                    type: "color",
+                    default: "#9c8762",
                 },
             ],
         },
@@ -148,14 +157,20 @@ const luxePhotoSchema = {
             label: "Contact Information",
             fields: [
                 {
+                    id: "content.contact.phone",
+                    label: "Phone Number",
+                    type: "text",
+                },
+                {
                     id: "content.contact.email",
                     label: "Email Address",
                     type: "text",
                 },
                 {
-                    id: "content.contact.phone",
-                    label: "Phone Number",
+                    id: "content.contact.location",
+                    label: "Location/Service Area",
                     type: "text",
+                    maxLength: 100,
                 },
             ],
         },
@@ -185,43 +200,7 @@ const luxePhotoSchema = {
                 },
             ],
         },
-        {
-            id: "branding",
-            label: "Branding Colors",
-            fields: [
-                {
-                    id: "branding.primaryColor",
-                    label: "Primary Color",
-                    type: "color",
-                    default: "#d4a574",
-                },
-                {
-                    id: "branding.accentColor",
-                    label: "Secondary Color",
-                    type: "color",
-                    default: "#c6a16e",
-                },
-                {
-                    id: "branding.neutralColor",
-                    label: "Neutral Color",
-                    type: "color",
-                    default: "#000000",
-                },
-            ],
-        },
-        {
-            id: "footer",
-            label: "Footer",
-            fields: [
-                {
-                    id: "content.sectionStyle.footer.bg",
-                    label: "Background Color",
-                    type: "color",
-                    default: "#000000",
-                },
-            ],
-        },
     ],
 };
 
-export default luxePhotoSchema;
+export default luxeClassicSchema;

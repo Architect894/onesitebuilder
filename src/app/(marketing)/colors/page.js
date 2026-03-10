@@ -19,13 +19,13 @@ const ColorSwatch = ({ name, shades }) => {
                         className="group cursor-pointer"
                     >
                         <div
-                            className="w-full h-24 rounded-lg shadow-lg border border-gray-700 transition-all group-hover:shadow-2xl"
+                            className="w-full h-24 rounded-lg shadow-lg border border-amber-200/20 transition-all group-hover:shadow-2xl group-hover:shadow-amber-200/30 group-hover:border-amber-200/40"
                             style={{ backgroundColor: color }}
                         />
-                        <p className="text-xs text-gray-400 mt-2 text-center group-hover:text-amber-200 transition-colors">
+                        <p className="text-xs text-amber-200/60 mt-2 text-center group-hover:text-amber-200 transition-colors">
                             {shade}
                         </p>
-                        <p className="text-xs text-gray-500 text-center font-mono\">{color}</p>
+                        <p className="text-xs text-amber-200/40 text-center font-mono">{color}</p>
                     </motion.div>
                 ))}
             </div>
@@ -80,27 +80,41 @@ export default function ColorsPage() {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-b from-gray-800 via-gray-850 to-gray-800 pt-32 pb-20">
-            <div className="max-w-7xl mx-auto px-6">
+        <main className="relative min-h-screen text-white pt-32 pb-20 overflow-hidden"
+            style={{
+                background: `
+                    radial-gradient(circle at top left, rgba(212, 165, 116, 0.08), transparent 30%),
+                    radial-gradient(circle at 85% 15%, rgba(252, 232, 195, 0.06), transparent 25%),
+                    radial-gradient(circle at bottom right, rgba(212, 165, 116, 0.05), transparent 35%),
+                    linear-gradient(135deg, #16161c 0%, #23232b 38%, #2f2d33 62%, #1d1d24 100%)`
+            }}>
+
+            {/* Animated background glows */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-40 left-1/4 w-96 h-96 bg-amber-700/10 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-40 right-1/4 w-96 h-96 bg-amber-700/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+            </div>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-16"
                 >
                     <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                        <span className="bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-amber-100 via-amber-200 to-amber-100 bg-clip-text text-transparent">
                             Color Palette
                         </span>
                     </h1>
-                    <p className="text-gray-400 text-lg">
+                    <p className="text-amber-200/70 text-lg">
                         Simple Peek's comprehensive color system for consistent branding
                     </p>
                 </motion.div>
 
                 <div className="space-y-16">
                     <ColorSwatch name="Primary - Deep Slate" shades={colors.primary} />
-                    <ColorSwatch name="Accent - Warm Amber" shades={colors.accent} />
-                    <ColorSwatch name="Secondary - Slate Blue" shades={colors.secondary} />
+                    <ColorSwatch name="Accent - Gunmetal Lighter" shades={colors.accent} />
+                    <ColorSwatch name="Secondary - Warm Gold" shades={colors.secondary} />
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -117,13 +131,13 @@ export default function ColorsPage() {
                                     className="group cursor-pointer"
                                 >
                                     <div
-                                        className="w-full h-32 rounded-lg shadow-lg border border-gray-700 transition-all group-hover:shadow-2xl"
+                                        className="w-full h-32 rounded-lg shadow-lg border border-amber-200/20 transition-all group-hover:shadow-2xl group-hover:shadow-amber-200/30"
                                         style={{ backgroundColor: color }}
                                     />
-                                    <p className="text-sm text-gray-400 mt-2 text-center capitalize group-hover:text-amber-400 transition-colors">
+                                    <p className="text-sm text-amber-200/60 mt-2 text-center capitalize group-hover:text-amber-200 transition-colors">
                                         {name}
                                     </p>
-                                    <p className="text-xs text-gray-500 text-center font-mono">{color}</p>
+                                    <p className="text-xs text-amber-200/40 text-center font-mono">{color}</p>
                                 </motion.div>
                             ))}
                         </div>

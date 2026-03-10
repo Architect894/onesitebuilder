@@ -64,11 +64,11 @@ export default function AnimatedNav() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className={`sticky top-0 z-50 border-b transition-all duration-300 backdrop-blur-xl ${
                     hasScrolled
-                    ? "border-gray-600/30 bg-gray-800/95 shadow-xl shadow-gray-700/5"
-                    : "border-gray-600/30 bg-gray-800/50"
+                    ? "border-amber-200/40 bg-gradient-to-b from-gray-950 to-gray-900/90 shadow-xl shadow-amber-200/20"
+                    : "border-amber-200/20 bg-gray-900/50"
                 }`}
         >
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 group">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-2 group">
                 {/* Logo */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, rotate: -5 }}
@@ -81,7 +81,7 @@ export default function AnimatedNav() {
                         <motion.img
                             src="/simplepeekwhite.png"
                             alt="Simple Peek"
-                            className="h-44 w-auto cursor-pointer relative z-10"
+                            className="h-30 w-auto cursor-pointer relative z-10"
                             whileHover={{ filter: "drop-shadow(0 0 8px rgba(212, 165, 116, 0.3))" }}
                             transition={{ duration: 0.3 }}
                         />
@@ -117,7 +117,7 @@ export default function AnimatedNav() {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent shadow-lg shadow-gray-600/30"
+                    className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent shadow-lg shadow-amber-200/30"
                 />
             )}
         </motion.nav>

@@ -1,8 +1,8 @@
 "use client";
 
 import FadeIn from "@/components/ui/FadeIn";
-import { motion, useScroll, useSpring, useTransform, useReducedMotion } from "framer-motion";
-import { useMemo, useRef } from "react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function LuxePhotoTemplate({
     site,
@@ -11,353 +11,390 @@ export default function LuxePhotoTemplate({
     links,
     isEditor = false
 }) {
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const sectionStyle = content.sectionStyle ?? {};
-    const heroBg = sectionStyle.hero?.bg ?? "#000000";
-    const aboutBg = sectionStyle.about?.bg ?? "#050505";
-    const galleryBg = sectionStyle.gallery?.bg ?? "#000000";
-    const footerBg = sectionStyle.footer?.bg ?? "#000000";
+    const heroAccentColor = sectionStyle.hero?.accentColor ?? branding.primaryColor;
+    const heroTextColor = content.hero?.textColor ?? "#ffffff";
+    const ctaButtonColor = content.cta?.color ?? branding.primaryColor;
+    const ctaTextColor = content.cta?.textColor ?? "#ffffff";
 
-    const reduceMotion = useReducedMotion();
-
-    const pageRef = useRef(null);
-
-    const { scrollYProgress: pageProgress } = useScroll({
-        target: pageRef,
-        offset: ["start start", "end end"],
-    });
-
-    const pg = useSpring(pageProgress, { stiffness: 120, damping: 25, mass: 0.6 });
-    const washY = useTransform(pg, [0, 1], [0, -120]);
-    const washOpacity = useTransform(pg, [0, 0.25, 1], [0.18, 0.22, 0.18]);
-
-    const heroParallaxY = useTransform(pg, [0, 0.35], [0, -28]);
-    const heroParallaxOpacity = useTransform(pg, [0, 0.22], [1, 0.92]);
-
-    const galleryRef = useRef(null);
-
-    const { scrollYProgress: galleryProgress } = useScroll({
-        target: galleryRef,
-        offset: ["start 0.85", "end 0.15"],
-    });
-
-    const gp = useSpring(galleryProgress, { stiffness: 140, damping: 26, mass: 0.55 });
-
-    const collagePresets = useMemo(
-        () => [
-            { x: -90, y: 70, r: -9, s: 0.92 },
-            { x: 60, y: 110, r: 8, s: 0.92 },
-            { x: 100, y: -50, r: 10, s: 0.92 },
-            { x: -70, y: -90, r: -11, s: 0.92 },
-            { x: 80, y: 35, r: 6, s: 0.92 },
-            { x: -110, y: 25, r: -6, s: 0.92 },
-        ],
-        []
-    );
+    const images = content.gallery || [];
 
     return (
         <main
-            ref={pageRef}
-            className={`text-white ${isEditor ? "builder-mode" : ""}`}
+            className={`text-white overflow-hidden ${isEditor ? "builder-mode" : ""}`}
+            suppressHydrationWarning
         >
-
-            {/* Background wash layer */}
-
-            <motion.div
-                aria-hidden
-                className="pointer-events-none fixed inset-0 -z-10"
-                style={{
-                    opacity: reduceMotion ? 0.14 : washOpacity,
-                    transform: "translateZ(0)",
-                }}
-            >
-
-                <motion.div
-                    className="absolute inset-0"
-                    style={{
-                        y: reduceMotion ? 0 : washY,
-                        background: `radial-gradient(circle at 20% 35%, ${branding.primaryColor}1f, transparent 60%),
-                        radial-gradient(circle at 80% 30%, ${branding.accentColor}14, transparent 55%),
-                        radial-gradient(circle at 55% 80%, ${branding.primaryColor}10, transparent 60%)`,
-                    }}
-                />
-
-            </motion.div>
-
-
-            {/* HERO */}
-
+            {/* HERO - FULL WIDTH IMAGE WITH TEXT OVERLAY */}
             <section
                 data-preview-section={isEditor ? "hero" : undefined}
-                className="relative overflow-hidden border-b border-white/10 py-48 scroll-mt-6"
-                style={{ backgroundColor: heroBg }}
+                className="relative h-screen flex items-center justify-center overflow-hidden"
+                style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}
             >
-
+                {/* Animated Background Image */}
                 <motion.div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0"
-                    style={{
-                        opacity: reduceMotion ? 1 : heroParallaxOpacity,
-                        y: reduceMotion ? 0 : heroParallaxY,
-                        background: `radial-gradient(circle at 25% 40%, ${branding.primaryColor}22, transparent 65%)`,
-                    }}
-                />
+                    className="absolute inset-0 w-full h-full"
+                    initial={{ scale: 1.05, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                >
+                    {images.length > 0 && (
+                        <img
+                            src={images[0].url}
+                            alt="Hero Background"
+                            className="w-full h-full object-cover"
+                        />
+                    )}
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" />
+                </motion.div>
 
-                <div className="mx-auto max-w-6xl px-6">
-                    <div className="grid items-center gap-20 md:grid-cols-2">
+                {/* Logo */}
+                <motion.div
+                    className="absolute top-8 left-6 md:left-12 z-20"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                    <img
+                        src={content.hero.logo}
+                        alt={site.name}
+                        className="w-32 md:w-40 object-contain"
+                    />
+                </motion.div>
 
-                        <FadeIn delay={0.05}>
-                            <div className="flex justify-center md:justify-start">
-                                <img
-                                    src={content.hero.logo}
-                                    alt={site.name}
-                                    className="w-56 object-contain opacity-95 md:w-72 lg:w-80"
-                                />
+                {/* Hero Content - Centered */}
+                <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+                    <FadeIn delay={0.3}>
+                        <p
+                            className="text-xs uppercase tracking-[0.4em] mb-6 font-light"
+                            style={{ color: heroAccentColor }}
+                            data-editable-field="content.hero.eyebrow"
+                        >
+                            {content.hero.eyebrow}
+                        </p>
+                    </FadeIn>
+
+                    <FadeIn delay={0.4}>
+                        <h1
+                            className="text-6xl md:text-7xl font-light tracking-tight leading-[1.1] mb-6 cursor-text hover:opacity-80 transition"
+                            style={{ color: heroTextColor }}
+                            data-editable-field="content.hero.headline"
+                        >
+                            {content.hero.headline}
+                        </h1>
+                    </FadeIn>
+
+                    <FadeIn delay={0.5}>
+                        <p
+                            className="text-lg md:text-xl font-light leading-relaxed mb-12 cursor-text hover:opacity-80 transition max-w-2xl mx-auto"
+                            style={{ color: heroTextColor }}
+                            data-editable-field="content.hero.subheadline"
+                        >
+                            {content.hero.subheadline}
+                        </p>
+                    </FadeIn>
+
+                    <FadeIn delay={0.6}>
+                        <motion.a
+                            href={content.cta.href}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="inline-flex items-center justify-center px-12 py-4 rounded-full text-sm uppercase tracking-[0.2em] font-medium transition-all duration-500"
+                            style={{
+                                backgroundColor: ctaButtonColor,
+                                color: ctaTextColor,
+                            }}
+                        >
+                            {content.cta.label}
+                            <span className="ml-3">↓</span>
+                        </motion.a>
+                    </FadeIn>
+                </div>
+
+                {/* Scroll Indicator */}
+                <motion.div
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+                    animate={{ y: [0, 8, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                >
+                    <div className="w-6 h-10 border border-white/40 rounded-full flex items-start justify-center p-2">
+                        <div className="w-1 h-2 bg-white/60 rounded-full" />
+                    </div>
+                </motion.div>
+            </section>
+
+            {/* ABOUT - SPLIT LAYOUT WITH IMAGE & TEXT */}
+            <section
+                data-preview-section={isEditor ? "about" : undefined}
+                className="relative py-32 border-b border-white/10"
+                style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}
+            >
+                <div className="mx-auto max-w-7xl px-6">
+                    <div className="grid md:grid-cols-2 gap-16 items-center">
+                        {/* Text Side */}
+                        <FadeIn>
+                            <div>
+                                <p
+                                    className="text-xs uppercase tracking-[0.35em] mb-4 font-light"
+                                    style={{ color: heroAccentColor }}
+                                >
+                                    ABOUT
+                                </p>
+                                <h2
+                                    className="text-5xl font-light leading-tight mb-6 cursor-text hover:opacity-80 transition"
+                                    style={{ color: content.about?.headingColor ?? "#ffffff" }}
+                                    data-editable-field="content.about.title"
+                                >
+                                    {content.about.title}
+                                </h2>
+
+                                <p
+                                    className="text-lg leading-relaxed font-light mb-8 cursor-text hover:opacity-80 transition"
+                                    style={{ color: content.about?.bodyColor ?? "#d4d4d4" }}
+                                    data-editable-field="content.about.body"
+                                >
+                                    {content.about.body}
+                                </p>
+
+                                {/* Services as Minimal List */}
+                                <div className="space-y-4 mt-12">
+                                    <p className="text-xs uppercase tracking-[0.3em] font-light text-neutral-500">
+                                        WHAT WE DO
+                                    </p>
+                                    <ul className="space-y-3">
+                                        {content.services && content.services.map((service) => (
+                                            <li
+                                                key={service}
+                                                className="flex items-center gap-3 text-neutral-300 font-light hover:text-white transition"
+                                            >
+                                                <span
+                                                    className="w-2 h-2 rounded-full"
+                                                    style={{ backgroundColor: heroAccentColor }}
+                                                />
+                                                {service}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         </FadeIn>
 
-                        <div className="max-w-xl">
-
-                            <FadeIn delay={0.15}>
-                                <p
-                                    className="text-xs uppercase tracking-[0.35em] text-neutral-500"
-                                    style={{ color: branding.accentColor }}
-                                >
-                                    {content.hero.eyebrow}
-                                </p>
-                            </FadeIn>
-
-                            <FadeIn delay={0.25}>
-                                <h1 className="mt-8 text-4xl font-semibold tracking-tight leading-[1.15] md:text-5xl">
-                                    {content.hero.headline}
-                                </h1>
-                            </FadeIn>
-
-                            <FadeIn delay={0.35}>
-                                <p className="mt-8 text-base leading-relaxed text-neutral-400 md:text-lg">
-                                    {content.hero.subheadline}
-                                </p>
-                            </FadeIn>
-
-                            <FadeIn delay={0.45}>
-                                <div className="mt-8">
-
-                                    <a
-                                        href={content.cta.href}
-                                        className="group relative inline-flex items-center justify-center overflow-hidden rounded-full px-10 py-4 text-sm font-medium transition-colors duration-500"
-                                        style={{
-                                            backgroundColor: branding.primaryColor,
-                                            color: "white",
-                                        }}
-                                    >
-
-                                        <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
-                                            <span className="sheen absolute top-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                                        </span>
-
-                                        <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                                            <span className="absolute h-0 w-0 rounded-full bg-white/20 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:h-[300%] group-hover:w-[300%] group-hover:opacity-100" />
-                                        </span>
-
-                                        <span className="relative z-10">{content.cta.label}</span>
-
-                                    </a>
-
-                                </div>
-                            </FadeIn>
-
-                        </div>
-
+                        {/* Image Side */}
+                        <FadeIn delay={0.1}>
+                            <motion.div
+                                className="relative h-[500px] rounded-2xl overflow-hidden"
+                                whileHover={{ scale: 1.02 }}
+                                transition={{ duration: 0.6 }}
+                            >
+                                {images.length > 1 && (
+                                    <img
+                                        src={images[1].url}
+                                        alt="Featured"
+                                        className="w-full h-full object-cover"
+                                    />
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            </motion.div>
+                        </FadeIn>
                     </div>
                 </div>
-
             </section>
 
-
-            {/* ABOUT */}
-
+            {/* GALLERY - DYNAMIC MASONRY LAYOUT */}
             <section
-                data-preview-section={isEditor ? "about" : undefined}
-                className="relative border-b border-white/10 py-28 scroll-mt-6"
-                style={{ backgroundColor: aboutBg }}
-            >
-
-                <div className="mx-auto grid max-w-6xl gap-16 px-6 md:grid-cols-2">
-
-                    <FadeIn>
-                        <div>
-                            <h2 className="text-3xl font-semibold tracking-tight">
-                                {content.about.title}
-                            </h2>
-
-                            <p className="mt-6 text-lg leading-relaxed text-neutral-400">
-                                {content.about.body}
-                            </p>
-                        </div>
-                    </FadeIn>
-
-                    <FadeIn delay={0.1}>
-                        <div
-                            className="rounded-3xl border border-white/10 p-10"
-                            style={{
-                                backgroundColor: branding.neutralColor,
-                                color: "white",
-                            }}
-                        >
-
-                            <p className="text-md uppercase tracking-[0.25em] text-white">
-                                Services
-                            </p>
-
-                            <ul className="mt-8 space-y-4 text-lg">
-                                {content.services.map((service) => (
-                                    <li key={service} className="border-b border-white/5 pb-4">
-                                        {service}
-                                    </li>
-                                ))}
-                            </ul>
-
-                        </div>
-                    </FadeIn>
-
-                </div>
-
-            </section>
-
-
-            {/* GALLERY */}
-
-            <section
-                ref={galleryRef}
                 data-preview-section={isEditor ? "gallery" : undefined}
-                className="relative border-b border-white/10 py-28 scroll-mt-6"
-                style={{ backgroundColor: galleryBg }}
+                className="relative py-32 border-b border-white/10"
+                style={{ backgroundColor: sectionStyle.gallery?.bg ?? "#000000" }}
             >
+                <div className="mx-auto max-w-7xl px-6">
+                    <FadeIn>
+                        <div className="mb-16">
+                            <p className="text-xs uppercase tracking-[0.35em] mb-4 font-light text-neutral-500">
+                                GALLERY
+                            </p>
+                            <h2 className="text-5xl font-light leading-tight">
+                                Featured Work
+                            </h2>
+                        </div>
+                    </FadeIn>
 
-                <div className="mx-auto max-w-6xl px-6">
-
-                    <motion.div
-                        style={
-                            reduceMotion
-                                ? { opacity: 1, y: 0 }
-                                : {
-                                      opacity: useTransform(gp, [0, 0.25], [0, 1]),
-                                      y: useTransform(gp, [0, 1], [18, 0]),
-                                  }
-                        }
-                        className="mb-14"
-                    >
-
-                        <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">
-                            Gallery
-                        </p>
-
-                        <h2 className="mt-4 text-4xl font-semibold tracking-tight">
-                            Recent moments
-                        </h2>
-
-                    </motion.div>
-
-                    <div className="grid gap-8 md:grid-cols-3">
-
-                        {content.gallery.map((image, i) => {
-
-                            const preset = collagePresets[i % collagePresets.length];
-
-                            const x = reduceMotion ? 0 : useTransform(gp, [0, 1], [preset.x, 0]);
-                            const y = reduceMotion ? 0 : useTransform(gp, [0, 1], [preset.y, 0]);
-                            const rotate = reduceMotion ? 0 : useTransform(gp, [0, 1], [preset.r, 0]);
-                            const scale = reduceMotion ? 1 : useTransform(gp, [0, 1], [preset.s, 1]);
-                            const opacity = reduceMotion ? 1 : useTransform(gp, [0, 0.35], [0, 1]);
-
-                            const lift = reduceMotion ? 0 : useTransform(gp, [0, 1], [10, 0]);
-
+                    {/* Masonry Grid */}
+                    <div className="grid md:grid-cols-3 gap-6 auto-rows-[300px]">
+                        {images.map((image, i) => {
+                            const isLarge = i % 5 === 0 || i % 5 === 3; // Every 5th or 4th is 2x size
                             return (
                                 <motion.div
                                     key={image.id}
-                                    style={{
-                                        x,
-                                        y,
-                                        rotate,
-                                        scale,
-                                        opacity,
-                                        transform: "translateZ(0)",
-                                    }}
-                                    className="group relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900"
+                                    className={`relative group rounded-lg overflow-hidden cursor-pointer ${
+                                        isLarge ? "md:col-span-2 md:row-span-2" : ""
+                                    }`}
+                                    whileHover={{ scale: 0.98 }}
+                                    onClick={() => setSelectedImage(image)}
                                 >
-
-                                    <motion.img
+                                    <img
                                         src={image.url}
-                                        alt={site.name}
-                                        className="h-[340px] w-full object-cover"
-                                        style={{ y: lift }}
-                                        whileHover={reduceMotion ? undefined : { scale: 1.03 }}
-                                        transition={{ type: "spring", stiffness: 220, damping: 22 }}
+                                        alt="Gallery"
+                                        className="w-full h-full object-cover"
                                     />
 
-                                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0" />
+                                    {/* Hover Overlay */}
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                                        <motion.div
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                            whileHover={{ scale: 1.1 }}
+                                        >
+                                            <div
+                                                className="w-12 h-12 rounded-full flex items-center justify-center"
+                                                style={{ backgroundColor: heroAccentColor }}
+                                            >
+                                                <span className="text-black font-bold">+</span>
+                                            </div>
+                                        </motion.div>
                                     </div>
-
                                 </motion.div>
                             );
-
                         })}
-
                     </div>
-
                 </div>
-
+            </section>
+            {/* STATS/HIGHLIGHTS SECTION */}
+            <section className="relative py-32 border-b border-white/10" style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}>
+                <div className="mx-auto max-w-7xl px-6">
+                    <div className="grid md:grid-cols-3 gap-12">
+                        {[
+                            { label: "Projects Completed", value: "500+" },
+                            { label: "Happy Clients", value: "1200+" },
+                            { label: "Years Experience", value: "10+" },
+                        ].map((stat, i) => (
+                            <FadeIn delay={i * 0.15} key={stat.label}>
+                                <div className="text-center">
+                                    <p
+                                        className="text-5xl md:text-6xl font-light mb-2"
+                                        style={{ color: heroAccentColor }}
+                                    >
+                                        {stat.value}
+                                    </p>
+                                    <p className="text-neutral-400 uppercase text-xs tracking-[0.2em]">
+                                        {stat.label}
+                                    </p>
+                                </div>
+                            </FadeIn>
+                        ))}
+                    </div>
+                </div>
             </section>
 
+            {/* CTA SECTION */}
+            <section className="relative py-32 border-b border-white/10" style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}>
+                <div className="mx-auto max-w-3xl px-6 text-center">
+                    <FadeIn>
+                        <p className="text-xs uppercase tracking-[0.35em] mb-6 font-light text-neutral-500">
+                            READY TO WORK TOGETHER?
+                        </p>
+                    </FadeIn>
+
+                    <FadeIn delay={0.1}>
+                        <h2 className="text-6xl font-light mb-8">
+                            Let's Create Something Amazing
+                        </h2>
+                    </FadeIn>
+
+                    <FadeIn delay={0.2}>
+                        <motion.a
+                            href={content.cta.href}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="inline-flex items-center justify-center px-12 py-4 rounded-full text-sm uppercase tracking-[0.2em] font-medium"
+                            style={{
+                                backgroundColor: ctaButtonColor,
+                                color: ctaTextColor,
+                            }}
+                        >
+                            Get In Touch
+                        </motion.a>
+                    </FadeIn>
+                </div>
+            </section>
 
             {/* FOOTER */}
-
             <footer
                 data-preview-section={isEditor ? "footer" : undefined}
-                className="py-16 scroll-mt-6"
-                style={{ backgroundColor: footerBg }}
+                className="py-16 border-t border-white/10"
+                style={{ backgroundColor: sectionStyle.footer?.bg ?? "#000000" }}
             >
+                <div className="mx-auto max-w-6xl px-6">
+                    <div className="grid md:grid-cols-3 gap-12 mb-12 pb-12 border-b border-white/5">
+                        <div>
+                            <img
+                                src={content.hero.logo}
+                                alt={site.name}
+                                className="w-24 mb-4"
+                            />
+                            <p className="text-neutral-400 text-sm font-light">
+                                {site.name}
+                            </p>
+                        </div>
 
-                <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 text-sm text-neutral-500 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.2em] text-neutral-600 mb-4 font-light">
+                                CONTACT
+                            </p>
+                            {content.contact?.email && (
+                                <a
+                                    href={`mailto:${content.contact.email}`}
+                                    className="text-neutral-300 hover:text-white transition text-sm font-light block"
+                                >
+                                    {content.contact.email}
+                                </a>
+                            )}
+                            {content.contact?.phone && (
+                                <a
+                                    href={`tel:${content.contact.phone}`}
+                                    className="text-neutral-300 hover:text-white transition text-sm font-light"
+                                >
+                                    {content.contact.phone}
+                                </a>
+                            )}
+                        </div>
 
-                    <p>{site.name}</p>
-
-                    <div className="flex gap-6">
-
-                        <a href={links.instagram} className="transition-colors hover:text-white">
-                            Instagram
-                        </a>
-
-                        <a href={links.facebook} className="transition-colors hover:text-white">
-                            Facebook
-                        </a>
-
-                        <a href={links.tiktok} className="transition-colors hover:text-white">
-                            TikTok
-                        </a>
-
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.2em] text-neutral-600 mb-4 font-light">
+                                FOLLOW
+                            </p>
+                            {content.social && (
+                                <div className="flex gap-4">
+                                    {content.social.instagram && (
+                                        <a
+                                            href={content.social.instagram}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-neutral-400 hover:text-white transition text-sm font-light"
+                                        >
+                                            Instagram
+                                        </a>
+                                    )}
+                                    {content.social.tiktok && (
+                                        <a
+                                            href={content.social.tiktok}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-neutral-400 hover:text-white transition text-sm font-light"
+                                        >
+                                            TikTok
+                                        </a>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
+                    <div className="text-center text-neutral-600 text-xs font-light">
+                        © {new Date().getFullYear()} {site.name}. All rights reserved.
+                    </div>
                 </div>
-
             </footer>
-
-
-            {/* sheen animation */}
-
-            <style jsx global>{`
-                @keyframes simplepeek-sheen {
-                    0% { transform: translateX(-140%); opacity: 0; }
-                    15% { opacity: 1; }
-                    55% { opacity: 1; }
-                    100% { transform: translateX(340%); opacity: 0; }
-                }
-                .sheen {
-                    animation: simplepeek-sheen 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-                }
-            `}</style>
-
         </main>
     );
 }

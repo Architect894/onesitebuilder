@@ -40,6 +40,21 @@ const templateDocuments = [
       },
     },
   },
+  {
+    key: "luxe-classic",
+    name: "Luxe Classic",
+    description: "Elegant timeless template with premium animations.",
+    version: 1,
+    isActive: true,
+    schema: {},
+    defaults: {
+      branding: {
+        primaryColor: "#d4a574",
+        accentColor: "#f1c886",
+        neutralColor: "#000000",
+      },
+    },
+  },
 ];
 
 async function run() {

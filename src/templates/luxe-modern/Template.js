@@ -1,14 +1,7 @@
 "use client";
 
 import FadeIn from "@/components/ui/FadeIn";
-import {
-    motion,
-    useScroll,
-    useSpring,
-    useTransform,
-    useReducedMotion,
-} from "framer-motion";
-import { useMemo, useRef } from "react";
+import { motion } from "framer-motion";
 
 export default function LuxeModernTemplate({
     site,
@@ -17,192 +10,404 @@ export default function LuxeModernTemplate({
     links,
     isEditor = false,
 }) {
-    const reduceMotion = useReducedMotion();
-
-    const pageRef = useRef(null);
-
-    const { scrollYProgress } = useScroll({
-        target: pageRef,
-        offset: ["start start", "end end"],
-    });
-
-    const progress = useSpring(scrollYProgress, {
-        stiffness: 120,
-        damping: 25,
-    });
-
-    const heroFloat = useTransform(progress, [0, 0.3], [0, -30]);
-
-    const galleryRef = useRef(null);
-
-    const { scrollYProgress: galleryProgress } = useScroll({
-        target: galleryRef,
-        offset: ["start 0.9", "end 0.2"],
-    });
-
-    const gp = useSpring(galleryProgress, {
-        stiffness: 150,
-        damping: 28,
-    });
-
-    const collagePresets = useMemo(
-        () => [
-            { x: -100, y: 80, r: -10 },
-            { x: 80, y: 110, r: 8 },
-            { x: 120, y: -60, r: 12 },
-            { x: -70, y: -100, r: -12 },
-            { x: 60, y: 40, r: 6 },
-            { x: -120, y: 30, r: -8 },
-        ],
-        []
-    );
+    const sectionStyle = content.sectionStyle ?? {};
+    const heroAccentColor = sectionStyle.hero?.accentColor ?? branding.primaryColor;
+    const heroTextColor = content.hero?.textColor ?? "#ffffff";
+    const aboutHeadingColor = content.about?.headingColor ?? "#ffffff";
+    const aboutBodyColor = content.about?.bodyColor ?? "#d4d4d4";
+    const ctaButtonColor = content.cta?.color ?? branding.primaryColor;
+    const ctaTextColor = content.cta?.textColor ?? "#ffffff";
 
     return (
         <main
-            ref={pageRef}
-            className={`relative text-white overflow-hidden ${isEditor ? "builder-mode" : ""
-                }`}
+            className={`text-white overflow-hidden ${isEditor ? "builder-mode" : ""}`}
+            suppressHydrationWarning
         >
-            {/* HERO */}
-
+            {/* HERO - SPLIT LAYOUT WITH ACCENT */}
             <section
                 data-preview-section={isEditor ? "hero" : undefined}
-                className="py-48 border-b border-white/10"
+                className="relative py-32 border-b border-white/10"
+                style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}
             >
-                <div className="mx-auto max-w-6xl px-6 grid md:grid-cols-2 gap-20 items-center">
-                    <motion.img
-                        src={content.hero.logo}
-                        alt={site.name}
-                        className="w-72 md:w-80"
-                        style={{ y: heroFloat }}
+                <div className="mx-auto max-w-7xl px-6">
+                    {/* Accent Line */}
+                    <div
+                        className="absolute left-0 top-0 bottom-0 w-1"
+                        style={{ backgroundColor: heroAccentColor }}
                     />
 
-                    <div>
-                        <FadeIn>
-                            <p
-                                className="uppercase tracking-[0.35em] text-xs"
-                                style={{ color: branding.accentColor }}
-                            >
-                                {content.hero.eyebrow}
-                            </p>
-                        </FadeIn>
+                    <div className="grid md:grid-cols-2 gap-20 items-center">
+                        {/* Content */}
+                        <div className="relative z-10">
+                            <FadeIn>
+                                <p
+                                    className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
+                                    style={{ color: heroAccentColor }}
+                                    data-editable-field="content.hero.eyebrow"
+                                >
+                                    {content.hero.eyebrow}
+                                </p>
+                            </FadeIn>
 
-                        <FadeIn delay={0.2}>
-                            <h1 className="mt-8 text-5xl font-semibold leading-tight">
-                                {content.hero.headline}
-                            </h1>
-                        </FadeIn>
+                            <FadeIn delay={0.1}>
+                                <h1
+                                    className="text-6xl md:text-7xl font-bold leading-tight mb-6 cursor-text hover:opacity-80 transition"
+                                    style={{ color: heroTextColor }}
+                                    data-editable-field="content.hero.headline"
+                                >
+                                    {content.hero.headline}
+                                </h1>
+                            </FadeIn>
 
-                        <FadeIn delay={0.3}>
-                            <p className="mt-8 text-neutral-400 text-lg">
-                                {content.hero.subheadline}
-                            </p>
-                        </FadeIn>
+                            <FadeIn delay={0.2}>
+                                <p
+                                    className="text-lg leading-relaxed mb-10 max-w-lg cursor-text hover:opacity-80 transition"
+                                    style={{ color: aboutBodyColor }}
+                                    data-editable-field="content.hero.subheadline"
+                                >
+                                    {content.hero.subheadline}
+                                </p>
+                            </FadeIn>
 
-                        <FadeIn delay={0.4}>
-                            <motion.a
-                                href={content.cta.href}
-                                whileHover={{ scale: 1.06 }}
-                                className="mt-10 inline-flex px-10 py-4 rounded-full text-sm font-medium"
-                                style={{ backgroundColor: branding.primaryColor }}
-                            >
-                                {content.cta.label}
-                            </motion.a>
-                        </FadeIn>
+                            <FadeIn delay={0.3}>
+                                <motion.a
+                                    href={content.cta.href}
+                                    whileHover={{ scale: 1.06, x: 4 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="inline-flex items-center justify-center px-8 py-3 rounded-sm text-sm font-semibold uppercase tracking-[0.15em] transition-all"
+                                    style={{
+                                        backgroundColor: ctaButtonColor,
+                                        color: ctaTextColor,
+                                    }}
+                                >
+                                    {content.cta.label}
+                                </motion.a>
+                            </FadeIn>
+                        </div>
+
+                        {/* Image */}
+                        <motion.div
+                            className="relative"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <div className="relative aspect-square rounded-lg overflow-hidden bg-neutral-900 border border-white/10">
+                                <img
+                                    src={content.gallery?.[0]?.url || content.hero.logo}
+                                    alt="Hero"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            {/* Decorative Elements */}
+                            <div
+                                className="absolute -top-4 -right-4 w-24 h-24 border-2 rounded-lg pointer-events-none"
+                                style={{ borderColor: heroAccentColor }}
+                            />
+                        </motion.div>
                     </div>
                 </div>
             </section>
 
-            {/* ABOUT */}
-
+            {/* FEATURES - CARD GRID */}
             <section
-                data-preview-section={isEditor ? "about" : undefined}
-                className="py-32 border-b border-white/10"
+                className="relative py-32 border-b border-white/10"
+                style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}
             >
-                <div className="mx-auto max-w-6xl px-6 grid md:grid-cols-2 gap-16">
+                <div className="mx-auto max-w-7xl px-6">
                     <FadeIn>
-                        <div>
-                            <h2 className="text-3xl font-semibold">
-                                {content.about.title}
-                            </h2>
-
-                            <p className="mt-6 text-neutral-400 text-lg">
-                                {content.about.body}
+                        <div className="mb-16">
+                            <p
+                                className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
+                                style={{ color: heroAccentColor }}
+                            >
+                                WHY CHOOSE US
                             </p>
+                            <h2 className="text-5xl font-bold leading-tight">
+                                Key Features
+                            </h2>
                         </div>
                     </FadeIn>
 
-                    <div
-                        className="rounded-3xl p-10 border border-white/10"
-                        style={{ backgroundColor: branding.neutralColor }}
-                    >
-                        <p className="uppercase text-xs tracking-[0.3em]">Services</p>
-
-                        <ul className="mt-8 space-y-6">
-                            {content.services.map((service) => (
-                                <li
-                                    key={service}
-                                    className="border-b border-white/10 pb-4"
+                    {/* Feature Cards */}
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {content.services && content.services.map((service, i) => (
+                            <FadeIn key={service} delay={i * 0.1}>
+                                <motion.div
+                                    whileHover={{ y: -4 }}
+                                    className="group relative p-8 rounded-lg border border-white/10 hover:border-white/30 transition-all cursor-text"
+                                    style={{ backgroundColor: "rgba(255,255,255,0.02)" }}
                                 >
-                                    {service}
-                                </li>
-                            ))}
-                        </ul>
+                                    {/* Card Number */}
+                                    <div
+                                        className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold"
+                                        style={{
+                                            backgroundColor: heroAccentColor,
+                                            color: "#000000",
+                                        }}
+                                    >
+                                        {i + 1}
+                                    </div>
+
+                                    <h3 className="text-xl font-semibold mb-4">{service}</h3>
+                                    <p className="text-neutral-400 text-sm leading-relaxed">
+                                        Discover what makes this feature essential for your success
+                                    </p>
+
+                                    {/* Hover Accent */}
+                                    <div
+                                        className="absolute bottom-0 left-0 h-1 w-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                        style={{ backgroundColor: heroAccentColor }}
+                                    />
+                                </motion.div>
+                            </FadeIn>
+                        ))}
                     </div>
                 </div>
             </section>
 
-            {/* GALLERY */}
-
+            {/* ABOUT - TEXT + IMAGE */}
             <section
-                ref={galleryRef}
-                data-preview-section={isEditor ? "gallery" : undefined}
-                className="py-32 border-b border-white/10"
+                data-preview-section={isEditor ? "about" : undefined}
+                className="relative py-32 border-b border-white/10"
+                style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}
             >
-                <div className="mx-auto max-w-6xl px-6">
-                    <h2 className="text-4xl font-semibold mb-16">
-                        Recent moments
-                    </h2>
+                <div className="mx-auto max-w-7xl px-6">
+                    <div className="grid md:grid-cols-2 gap-16 items-center">
+                        {/* Image */}
+                        <FadeIn>
+                            <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                className="rounded-lg overflow-hidden border border-white/10"
+                            >
+                                <img
+                                    src={content.gallery?.[1]?.url || "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800"}
+                                    alt="About"
+                                    className="w-full h-[500px] object-cover"
+                                />
+                            </motion.div>
+                        </FadeIn>
 
-                    <div className="grid md:grid-cols-3 gap-10">
-                        {content.gallery.map((image, i) => {
-                            const preset = collagePresets[i % collagePresets.length];
-
-                            const x = useTransform(gp, [0, 1], [preset.x, 0]);
-                            const y = useTransform(gp, [0, 1], [preset.y, 0]);
-                            const rotate = useTransform(gp, [0, 1], [preset.r, 0]);
-
-                            return (
-                                <motion.div
-                                    key={image.id}
-                                    style={{ x, y, rotate }}
-                                    className="rounded-3xl overflow-hidden border border-white/10"
+                        {/* Content */}
+                        <FadeIn delay={0.1}>
+                            <div>
+                                <p
+                                    className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
+                                    style={{ color: heroAccentColor }}
                                 >
-                                    <img
-                                        src={image.url}
-                                        alt={site.name}
-                                        className="w-full h-[340px] object-cover"
-                                    />
-                                </motion.div>
-                            );
-                        })}
+                                    OUR STORY
+                                </p>
+                                <h2
+                                    className="text-5xl font-bold leading-tight mb-8 cursor-text hover:opacity-80 transition"
+                                    style={{ color: aboutHeadingColor }}
+                                    data-editable-field="content.about.title"
+                                >
+                                    {content.about.title}
+                                </h2>
+
+                                <p
+                                    className="text-lg leading-relaxed mb-8 cursor-text hover:opacity-80 transition"
+                                    style={{ color: aboutBodyColor }}
+                                    data-editable-field="content.about.body"
+                                >
+                                    {content.about.body}
+                                </p>
+
+                                <motion.a
+                                    href={content.cta.href}
+                                    whileHover={{ x: 4 }}
+                                    className="inline-flex items-center text-sm font-semibold uppercase tracking-[0.15em] group"
+                                    style={{ color: heroAccentColor }}
+                                >
+                                    Learn More
+                                    <span className="ml-2 transition-transform group-hover:translate-x-2">
+                                        →
+                                    </span>
+                                </motion.a>
+                            </div>
+                        </FadeIn>
                     </div>
+                </div>
+            </section>
+
+            {/* PORTFOLIO - SHOWCASE */}
+            <section
+                data-preview-section={isEditor ? "gallery" : undefined}
+                className="relative py-32 border-b border-white/10"
+                style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}
+            >
+                <div className="mx-auto max-w-7xl px-6">
+                    <FadeIn>
+                        <div className="mb-16">
+                            <p
+                                className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
+                                style={{ color: heroAccentColor }}
+                            >
+                                RECENT WORK
+                            </p>
+                            <h2 className="text-5xl font-bold leading-tight">
+                                Our Portfolio
+                            </h2>
+                        </div>
+                    </FadeIn>
+
+                    {/* Portfolio Grid */}
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {content.gallery && content.gallery.map((image, i) => (
+                            <motion.div
+                                key={image.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                                whileHover={{ scale: 0.98 }}
+                                className="group relative aspect-video rounded-lg overflow-hidden cursor-pointer border border-white/10"
+                            >
+                                <img
+                                    src={image.url}
+                                    alt="Portfolio"
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                                    <span className="text-white font-semibold opacity-0 group-hover:opacity-100 transition">
+                                        View Project
+                                    </span>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* STATS */}
+            <section className="relative py-32 border-b border-white/10" style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}>
+                <div className="mx-auto max-w-7xl px-6">
+                    <div className="grid md:grid-cols-4 gap-8">
+                        {[
+                            { value: "1000+", label: "Happy Customers" },
+                            { value: "50+", label: "Awards Won" },
+                            { value: "15+", label: "Years Active" },
+                            { value: "99%", label: "Satisfaction Rate" },
+                        ].map((stat, i) => (
+                            <FadeIn delay={i * 0.1} key={stat.label}>
+                                <div className="text-center">
+                                    <p
+                                        className="text-5xl font-bold mb-2"
+                                        style={{ color: heroAccentColor }}
+                                    >
+                                        {stat.value}
+                                    </p>
+                                    <p className="text-neutral-400 text-sm uppercase tracking-[0.15em]">
+                                        {stat.label}
+                                    </p>
+                                </div>
+                            </FadeIn>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA */}
+            <section className="relative py-32 border-b border-white/10" style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}>
+                <div className="mx-auto max-w-3xl px-6 text-center">
+                    <FadeIn>
+                        <h2 className="text-6xl font-bold mb-8">
+                            Ready to Begin?
+                        </h2>
+                    </FadeIn>
+
+                    <FadeIn delay={0.1}>
+                        <p className="text-lg text-neutral-400 mb-10">
+                            Let's create something amazing together
+                        </p>
+                    </FadeIn>
+
+                    <FadeIn delay={0.2}>
+                        <motion.a
+                            href={content.cta.href}
+                            whileHover={{ scale: 1.06 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="inline-flex items-center justify-center px-10 py-4 rounded-sm text-sm font-semibold uppercase tracking-[0.15em]"
+                            style={{
+                                backgroundColor: ctaButtonColor,
+                                color: ctaTextColor,
+                            }}
+                        >
+                            {content.cta.label}
+                        </motion.a>
+                    </FadeIn>
                 </div>
             </section>
 
             {/* FOOTER */}
-
             <footer
                 data-preview-section={isEditor ? "footer" : undefined}
-                className="py-20 text-sm text-neutral-500"
+                className="py-16 border-t border-white/10"
+                style={{ backgroundColor: sectionStyle.footer?.bg ?? "#000000" }}
             >
-                <div className="mx-auto max-w-6xl px-6 flex justify-between">
-                    <p>{site.name}</p>
+                <div className="mx-auto max-w-7xl px-6">
+                    <div className="grid md:grid-cols-4 gap-12 mb-12 pb-12 border-b border-white/10">
+                        <div>
+                            <p className="font-semibold mb-4">{site.name}</p>
+                            <p className="text-neutral-400 text-sm">
+                                Modern solutions for modern problems
+                            </p>
+                        </div>
 
-                    <div className="flex gap-6">
-                        <a href={links.instagram}>Instagram</a>
-                        <a href={links.facebook}>Facebook</a>
-                        <a href={links.tiktok}>TikTok</a>
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.15em] font-semibold mb-4">
+                                Company
+                            </p>
+                            <ul className="space-y-2 text-sm text-neutral-400">
+                                <li><a href="#" className="hover:text-white transition">About</a></li>
+                                <li><a href="#" className="hover:text-white transition">Services</a></li>
+                                <li><a href="#" className="hover:text-white transition">Work</a></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.15em] font-semibold mb-4">
+                                Contact
+                            </p>
+                            {content.contact?.email && (
+                                <a href={`mailto:${content.contact.email}`} className="text-neutral-400 text-sm hover:text-white transition block">
+                                    {content.contact.email}
+                                </a>
+                            )}
+                            {content.contact?.phone && (
+                                <a href={`tel:${content.contact.phone}`} className="text-neutral-400 text-sm hover:text-white transition">
+                                    {content.contact.phone}
+                                </a>
+                            )}
+                        </div>
+
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.15em] font-semibold mb-4">
+                                Follow
+                            </p>
+                            {content.social && (
+                                <div className="flex gap-3">
+                                    {content.social.instagram && (
+                                        <a href={content.social.instagram} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition">
+                                            IG
+                                        </a>
+                                    )}
+                                    {content.social.tiktok && (
+                                        <a href={content.social.tiktok} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition">
+                                            TT
+                                        </a>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-neutral-600">
+                        <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+                        <div className="flex gap-6">
+                            <a href="#" className="hover:text-neutral-300 transition">Privacy</a>
+                            <a href="#" className="hover:text-neutral-300 transition">Terms</a>
+                        </div>
                     </div>
                 </div>
             </footer>

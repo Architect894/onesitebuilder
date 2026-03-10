@@ -1,50 +1,76 @@
 import { getCollection } from "@/lib/db";
-import { signupSchema } from "@/lib/validation/auth";
-import { hashPassword } from "@/lib/auth/password";
-import { signSessionToken } from "@/lib/auth/session";
-import { setSessionCookie } from "@/lib/auth/cookies";
-import { serializeUser } from "@/lib/serializers/site";
+import CryptoJS from "crypto-js";
+
+// Hash password using SHA256 with salt
+function hashPassword(password) {
+  // Generate a random salt
+  const salt = CryptoJS.lib.WordArray.random(16).toString();
+  // Hash password + salt
+  const hash = CryptoJS.SHA256(password + salt).toString();
+  return `${salt}:${hash}`;
+}
 
 export async function POST(request) {
   try {
-    const payload = signupSchema.parse(await request.json());
-    const users = await getCollection("users");
+    const body = await request.json();
+    console.log("[Signup] Received:", body);
+    
+    // Manual validation (simpler and works with Turbopack)
+    const { name, email, password } = body;
+    
+    if (!name || typeof name !== 'string' || name.trim().length < 2) {
+      return Response.json({ error: "Name must be at least 2 characters" }, { status: 400 });
+    }
+    
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      return Response.json({ error: "Invalid email" }, { status: 400 });
+    }
+    
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      return Response.json({ error: "Password must be at least 8 characters" }, { status: 400 });
+    }
+    
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedName = name.trim();
 
-    const existingUser = await users.findOne({ email: payload.email });
+    console.log("[Signup] Validated");
+    
+    // Check if user exists
+    const users = await getCollection("users");
+    const existingUser = await users.findOne({ email: normalizedEmail });
+    
     if (existingUser) {
       return Response.json({ error: "Email is already in use." }, { status: 409 });
     }
 
-    const now = new Date();
-    const passwordHash = await hashPassword(payload.password);
+    // Hash password
+    const hashedPassword = hashPassword(password);
 
+    // Insert user
+    const now = new Date();
     const result = await users.insertOne({
-      name: payload.name,
-      email: payload.email,
-      passwordHash,
+      name: normalizedName,
+      email: normalizedEmail,
+      password: hashedPassword,
       role: "user",
       createdAt: now,
       updatedAt: now,
       lastLoginAt: now,
     });
 
-    const user = await users.findOne(
-      { _id: result.insertedId },
-      { projection: { passwordHash: 0 } }
-    );
-
-    const token = await signSessionToken({
-      sub: String(result.insertedId),
-      email: payload.email,
-      role: "user",
-    });
-
-    await setSessionCookie(token);
-
-    return Response.json({ user: serializeUser(user) }, { status: 201 });
+    console.log("[Signup] User inserted:", result.insertedId);
+    
+    return Response.json({ 
+      user: { 
+        id: String(result.insertedId),
+        email: normalizedEmail,
+        name: normalizedName
+      } 
+    }, { status: 201 });
   } catch (error) {
+    console.error("[Signup Error]", error);
     return Response.json(
-      { error: error?.issues?.[0]?.message || "Unable to create account." },
+      { error: error?.message || "Unable to create account." },
       { status: 400 }
     );
   }
