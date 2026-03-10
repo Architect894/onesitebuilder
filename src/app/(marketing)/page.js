@@ -1,186 +1,243 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { useState } from "react";
+import Link from "next/link";
+
 export default function MarketingPage() {
+    const [hoveredCard, setHoveredCard] = useState(null);
+
+    const features = [
+        {
+            title: "Simple Interface",
+            description: "Clean, intuitive design that anyone can use",
+            icon: "✨",
+        },
+        {
+            title: "Real-time Updates",
+            description: "See changes instantly as you work",
+            icon: "⚡",
+        },
+        {
+            title: "Secure & Reliable",
+            description: "Your data is always protected",
+            icon: "🔒",
+        },
+    ];
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2,
+                delayChildren: 0.3,
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6 },
+        },
+    };
+
     return (
-        <main className="bg-black text-white">
+        <main className="relative overflow-hidden">
+            {/* Animated background elements */}
+            <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
+                <div className="absolute top-10 left-10 w-96 h-96 bg-amber-700/1 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-20 right-20 w-96 h-96 bg-amber-700/1 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+            </div>
 
-            {/* HERO */}
-            <section className="relative overflow-hidden py-36 bg-gradient-to-b from-black to-neutral-950">
-                <div className="mx-auto max-w-6xl px-6 text-center">
+            {/* Hero Section */}
+            <motion.section
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-32 pb-32"
+            >
+                <div className="max-w-5xl mx-auto text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: -30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        <h1 className="text-4xl md:text-6xl font-black mb-20 leading-tight max-w-4xl">
+                            <motion.span
+                                className="bg-gradient-to-r from-amber-100 via-amber-200 to-amber-100 bg-clip-text text-transparent"
+                                animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
+                                transition={{ duration: 3, repeat: Infinity }}
+                            >
+                                A website so clear
+                            </motion.span>
+                            <div className="text-gray-100">
+                                your clients understand you instantly.
+                            </div>
+                        </h1>
+                    </motion.div>
 
-                    <h1 className="text-5xl sm:text-7xl font-semibold tracking-[-0.02em] leading-tight">
-                        A website so clear,
-                        <span className="block text-neutral-400">
-                            your client understands you instantly.
-                        </span>
-                    </h1>
-
-                    <p className="mt-8 max-w-2xl mx-auto text-lg text-neutral-400 leading-relaxed">
-                        OneSite creates beautiful one‑page websites designed for service businesses.
-                        No clutter. No complexity. Just clarity and conversion.
-                    </p>
-
-                    <div className="mt-12 flex justify-center gap-6">
-                        <a
-                            href="/signup"
-                            className="rounded-full bg-white px-8 py-4 text-sm font-medium text-black transition hover:scale-[1.05]"
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.6 }}
+                        className="flex flex-col sm:flex-row gap-6 justify-center"
+                    >
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
-                            Start Free Trial
-                        </a>
+                            <Link href="/signup">
+                                <button className="px-8 py-4 bg-gradient-to-r from-amber-100 to-amber-200 text-gray-900 font-bold rounded-lg shadow-xl shadow-amber-200/30 hover:shadow-2xl hover:shadow-amber-200/50 transition-all cursor-pointer text-lg interactive-button">
+                                    Get Started Free
+                                </button>
+                            </Link>
+                        </motion.div>
 
-                        <a
-                            href="#how-it-works"
-                            className="rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white transition hover:bg-white/10"
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
-                            See How It Works
-                        </a>
-                    </div>
-
+                            <Link href="/colors">
+                                <button className="px-8 py-4 border-2 border-amber-200/50 text-amber-100 font-bold rounded-lg hover:border-amber-200 hover:bg-amber-200/10 transition-all cursor-pointer text-lg">
+                                    View Colors
+                                </button>
+                            </Link>
+                        </motion.div>
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
 
+            {/* Features Section */}
+            <motion.section
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="relative z-10 py-32 px-6"
+            >
+                <div className="max-w-6xl mx-auto">
+                    <motion.h2
+                        initial={{ opacity: 0, y: -20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true }}
+                        className="text-5xl md:text-6xl font-bold text-center mb-24 text-gray-100"
+                    >
+                        Why Choose{" "}
+                        <span className="text-amber-200">Simple Peek?</span>
+                    </motion.h2>
 
-            {/* POSITIONING SECTION */}
-            <section className="py-28 border-b border-white/10 bg-black">
-                <div className="mx-auto max-w-4xl px-6 text-center">
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="grid md:grid-cols-3 gap-8"
+                    >
+                        {features.map((feature, index) => (
+                            <motion.div
+                                key={index}
+                                variants={itemVariants}
+                                onHoverStart={() => setHoveredCard(index)}
+                                onHoverEnd={() => setHoveredCard(null)}
+                                className="group relative"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-200/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
 
-                    <h2 className="text-3xl font-semibold">
-                        This isn’t Wix.
-                    </h2>
+                                <motion.div
+                                    animate={{
+                                        y: hoveredCard === index ? -8 : 0,
+                                    }}
+                                    className="relative bg-gradient-to-br from-gray-700/50 to-gray-800/50 backdrop-blur-xl p-8 rounded-2xl border border-gray-600/50 group-hover:border-amber-700/50 transition-all cursor-pointer card-hover"
+                                >
+                                    <motion.div
+                                        className={`text-5xl mb-4 block`}
+                                        animate={{ rotate: hoveredCard === index ? 12 : 0, scale: hoveredCard === index ? 1.2 : 1 }}
+                                    >
+                                        {feature.icon}
+                                    </motion.div>
 
-                    <p className="mt-6 text-lg text-neutral-400 leading-relaxed">
-                        You don’t need 15 pages. You don’t need dropdown menus.
-                        You need a clear message, strong visuals, and a single call to action.
-                    </p>
+                                    <h3 className="text-xl font-bold text-amber-200 mb-3">
+                                        {feature.title}
+                                    </h3>
 
-                    <p className="mt-6 text-lg text-neutral-400 leading-relaxed">
-                        One page. Structured. Focused. Designed to convert.
-                    </p>
+                                    <p className="text-gray-300 text-sm leading-relaxed">
+                                        {feature.description}
+                                    </p>
 
+                                    <motion.div
+                                        className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-amber-700 to-amber-800 rounded-b-2xl origin-left"
+                                        animate={{ scaleX: hoveredCard === index ? 1 : 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    />
+                                </motion.div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
 
-
-            {/* WHO IT'S FOR */}
-            <section className="py-28 border-b border-white/10 bg-neutral-950">
-                <div className="mx-auto max-w-6xl px-6 grid md:grid-cols-3 gap-12 text-center">
-
-                    <div>
-                        <h3 className="text-xl font-semibold">Photo Booth Rentals</h3>
-                        <p className="mt-4 text-neutral-400">
-                            Show packages. Show gallery. Get booked.
+            {/* CTA Section */}
+            <motion.section
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="relative z-10 py-32 px-6"
+            >
+                <div className="max-w-3xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true }}
+                        className="bg-gradient-to-r from-amber-300/20 to-amber-200/20 backdrop-blur-xl rounded-2xl p-16 border border-amber-200/30 text-center"
+                    >
+                        <h3 className="text-3xl font-bold text-gray-100 mb-4">
+                            Ready to Get Started?
+                        </h3>
+                        <p className="text-gray-300 mb-8 text-lg">
+                            Join thousands of creators and businesses using Simple Peek
                         </p>
-                    </div>
 
-                    <div>
-                        <h3 className="text-xl font-semibold">Event Services</h3>
-                        <p className="mt-4 text-neutral-400">
-                            Make your offer crystal clear in seconds.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h3 className="text-xl font-semibold">Local Businesses</h3>
-                        <p className="mt-4 text-neutral-400">
-                            Stop overcomplicating your website.
-                        </p>
-                    </div>
-
-                </div>
-            </section>
-
-
-            {/* HOW IT WORKS */}
-            <section id="how-it-works" className="py-28 border-b border-white/10 bg-black">
-                <div className="mx-auto max-w-6xl px-6 text-center">
-
-                    <h2 className="text-3xl font-semibold">
-                        Launch in minutes.
-                    </h2>
-
-                    <div className="mt-16 grid md:grid-cols-3 gap-12">
-
-                        <div>
-                            <div className="text-4xl font-semibold text-neutral-500">01</div>
-                            <h3 className="mt-4 text-xl font-semibold">Choose a template</h3>
-                            <p className="mt-4 text-neutral-400">
-                                Professionally designed layouts built for conversion.
-                            </p>
-                        </div>
-
-                        <div>
-                            <div className="text-4xl font-semibold text-neutral-500">02</div>
-                            <h3 className="mt-4 text-xl font-semibold">Customize your content</h3>
-                            <p className="mt-4 text-neutral-400">
-                                Edit text, colors, and images in seconds.
-                            </p>
-                        </div>
-
-                        <div>
-                            <div className="text-4xl font-semibold text-neutral-500">03</div>
-                            <h3 className="mt-4 text-xl font-semibold">Publish & get booked</h3>
-                            <p className="mt-4 text-neutral-400">
-                                Your site goes live instantly.
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-            </section>
-
-
-            {/* PRICING */}
-            <section className="py-28 bg-neutral-950 text-center">
-                <div className="mx-auto max-w-3xl px-6">
-
-                    <h2 className="text-3xl font-semibold">
-                        Simple pricing.
-                    </h2>
-
-                    <p className="mt-6 text-neutral-400">
-                        One flat monthly rate. Hosting included.
-                    </p>
-
-                    <div className="mt-12 text-6xl font-semibold">
-                        $19<span className="text-xl text-neutral-400">/month</span>
-                    </div>
-
-                    <div className="mt-10">
-                        <a
-                            href="/signup"
-                            className="rounded-full bg-white px-10 py-4 text-sm font-medium text-black transition hover:scale-[1.05]"
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-10 py-4 bg-gradient-to-r from-amber-100 to-amber-200 text-gray-900 font-bold rounded-lg shadow-xl shadow-amber-200/30 hover:shadow-2xl hover:shadow-amber-200/50 transition-all cursor-pointer text-lg interactive-button"
                         >
-                            Start Free Trial
+                            Start Your Free Trial
+                        </motion.button>
+                    </motion.div>
+                </div>
+            </motion.section>
+
+            {/* Footer */}
+            <motion.footer
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="relative z-10 border-t border-gray-700/30 py-16 px-6 mt-32"
+            >
+                <div className="max-w-6xl mx-auto flex justify-between items-center">
+                    <p className="text-gray-400">&copy; 2026 Simple Peek. All rights reserved.</p>
+                    <div className="flex gap-6 text-gray-400">
+                        <Link href="/colors" className="hover:text-amber-200 transition-colors">
+                            Colors
+                        </Link>
+                        <a href="#" className="hover:text-amber-200 transition-colors">
+                            Privacy
+                        </a>
+                        <a href="#" className="hover:text-amber-200 transition-colors">
+                            Terms
                         </a>
                     </div>
-
                 </div>
-            </section>
-
-
-            {/* FINAL CTA */}
-            <section className="py-28 bg-black text-center">
-                <div className="mx-auto max-w-3xl px-6">
-
-                    <h2 className="text-4xl font-semibold">
-                        Build once. Convert forever.
-                    </h2>
-
-                    <p className="mt-6 text-neutral-400">
-                        Stop building websites. Start building clarity.
-                    </p>
-
-                    <div className="mt-10">
-                        <a
-                            href="/signup"
-                            className="rounded-full bg-white px-8 py-4 text-sm font-medium text-black transition hover:scale-[1.05]"
-                        >
-                            Get Started
-                        </a>
-                    </div>
-
-                </div>
-            </section>
-
+            </motion.footer>
         </main>
     );
 }

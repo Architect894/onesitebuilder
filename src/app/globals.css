@@ -1,18 +1,87 @@
 @import "tailwindcss";
 
+/* =============================
+   COLOR PALETTE - Easily customizable
+   ============================= */
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
+  /* PRIMARY - Gunmetal Grey */
+  --color-primary-50: #f6f6f7;
+  --color-primary-100: #ececef;
+  --color-primary-200: #d9d9df;
+  --color-primary-300: #bebec8;
+  --color-primary-400: #8a8a96;
+  --color-primary-500: #6a6a77;
+  --color-primary-600: #55555f;
+  --color-primary-700: #4a4a52;
+  --color-primary-800: #3a3a41;
+  --color-primary-900: #2a2a30;
+
+  /* ACCENT - Gunmetal Lighter */
+  --color-accent-50: #fafafa;
+  --color-accent-100: #f5f5f5;
+  --color-accent-200: #eeeeee;
+  --color-accent-300: #e0e0e0;
+  --color-accent-400: #d1d5db;
+  --color-accent-500: #a0a0a8;
+  --color-accent-600: #7a7a82;
+  --color-accent-700: #5a5a62;
+  --color-accent-800: #4a4a52;
+  --color-accent-900: #3a3a41;
+
+  /* SECONDARY - Warm Gold */
+  --color-secondary-50: #fffbf0;
+  --color-secondary-100: #fef3e2;
+  --color-secondary-200: #fce8c3;
+  --color-secondary-300: #f9dca4;
+  --color-secondary-400: #f1c886;
+  --color-secondary-500: #d4a574;
+  --color-secondary-600: #bf9458;
+  --color-secondary-700: #a68247;
+  --color-secondary-800: #8a6a39;
+  --color-secondary-900: #6f542c;
+
+  /* SEMANTIC COLORS */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* NEUTRAL - For text, borders, backgrounds */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f4f4f5;
+  --color-neutral-200: #e4e4e7;
+  --color-neutral-300: #d4d4d8;
+  --color-neutral-400: #a1a1a6;
+  --color-neutral-500: #71717a;
+  --color-neutral-600: #52525b;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272a;
+  --color-neutral-900: #18181b;
+
+  /* BASE COLORS */
+  --color-background: #2a2a30;
+  --color-surface: #3a3a41;
+  --color-surface-light: #4a4a52;
+  --color-foreground: #d1d5db;
+  --color-border: #4a4a52;
+  --color-border-light: #5a5a62;
+
+  /* LEGACY (for transition) */
+  --background: var(--color-primary-900);
+  --foreground: var(--color-primary-200);
+  --accent: var(--color-accent-500);
+  --accent-dark: var(--color-accent-600);
 }
 
 html,
 body {
   min-height: 100%;
-  background: var(--background);
-  color: var(--foreground);
+  scroll-behavior: smooth;
 }
 
 body {
+  background-color: #3a3a41;
+  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -20,20 +89,12 @@ body {
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background-color: #0a0a0a;
-  color: white;
-}
-
 ::selection {
-  background: white;
-  color: black;
+  background: var(--accent);
+  color: var(--background);
 }
 
+/* Gradient and animations */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -62,6 +123,169 @@ body {
   animation-play-state: paused;
 }
 
+/* =============================
+   ANIMATED EFFECTS - Make it alive!
+   ============================= */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmerWave {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 165, 116, 0.2), 0 0 40px rgba(212, 165, 116, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(212, 165, 116, 0.4), 0 0 60px rgba(212, 165, 116, 0.2);
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% {
+    border-color: rgba(212, 165, 116, 0.3);
+  }
+  50% {
+    border-color: rgba(212, 165, 116, 0.8);
+  }
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(212, 165, 116, 0);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(212, 165, 116, 0.4);
+  }
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-1deg);
+  }
+  75% {
+    transform: rotate(1deg);
+  }
+}
+
+.scroll-fade {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.border-glow {
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+.text-glow {
+  animation: textGlow 3s ease-in-out infinite;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(212, 165, 116, 0.1) 0%,
+    rgba(212, 165, 116, 0.2) 50%,
+    rgba(212, 165, 116, 0.1) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmerWave 2s infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 3s ease-in-out infinite;
+}
+
+/* Interactive elements */
+.interactive-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.interactive-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.interactive-button:hover::before {
+  left: 100%;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(212, 165, 116, 0.1);
+}
+
+/* Link underline animation */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-secondary-500), var(--color-secondary-600));
+  transition: width 0.3s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Editor and builder mode styles */
 .editor [data-preview-section]:hover {
   outline: 2px dashed rgba(255,255,255,0.35);
   outline-offset: -2px;

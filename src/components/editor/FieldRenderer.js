@@ -24,9 +24,9 @@ export default function FieldRenderer({ field, value, onChange, onFocusField }) 
         "#1a1a1a",
         "#ffffff",
         "#f5f5f5",
-        "#111827", // slate-ish
-        "#0f172a", // deep navy
-        "#1f2937", // neutral dark
+        "#3a3a41", // gunmetal-ish
+        "#4a4a52", // gunmetal medium
+        "#5a5a62", // gunmetal light
     ];
 
     return (
