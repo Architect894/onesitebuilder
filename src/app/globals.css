@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+@theme {
+  /* Deep Slate */
+  --color-midnight-950: #020617;
+  --color-midnight-900: #0f172a;
+  --color-midnight-800: #1e293b;
+  --color-midnight-700: #334155;
+  --color-midnight-600: #475569;
+  --color-midnight-500: #64748b;
+  --color-midnight-400: #94a3b8;
+  /* Bright Orange */
+  --color-blush-50: #fff7ed;
+  --color-blush-100: #ffedd5;
+  --color-blush-200: #fed7aa;
+  --color-blush-300: #fdba74;
+  --color-blush-400: #fb923c;
+  --color-blush-500: #f97316;
+}
+
 :root {
   color-scheme: dark;
 
@@ -58,38 +76,38 @@
   --color-neutral-900: #18181b;
 
   /* Shared site shell */
-  --site-bg: #17171d;
-  --site-bg-alt: #202028;
-  --site-surface: rgba(44, 44, 52, 0.78);
-  --site-surface-strong: rgba(56, 56, 66, 0.92);
-  --site-surface-soft: rgba(255, 255, 255, 0.04);
-  --site-border: rgba(209, 213, 219, 0.12);
-  --site-border-strong: rgba(212, 165, 116, 0.22);
-  --site-text: #f5f5f7;
-  --site-text-muted: #b5b7c1;
-  --site-text-soft: #8a8c96;
-  --site-accent: #d4a574;
-  --site-accent-strong: #f1c886;
-  --site-accent-soft: rgba(212, 165, 116, 0.14);
-  --site-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-  --site-shadow-accent: 0 18px 50px rgba(212, 165, 116, 0.18);
+  --site-bg: #1c1c1f;
+  --site-bg-alt: #222226;
+  --site-surface: rgba(42, 42, 47, 0.88);
+  --site-surface-strong: rgba(54, 54, 60, 0.96);
+  --site-surface-soft: rgba(255, 255, 255, 0.03);
+  --site-border: rgba(180, 180, 190, 0.12);
+  --site-border-strong: rgba(249, 115, 22, 0.22);
+  --site-text: #f1f1f3;
+  --site-text-muted: #a0a0aa;
+  --site-text-soft: #6b6b76;
+  --site-accent: #f97316;
+  --site-accent-strong: #fdba74;
+  --site-accent-soft: rgba(249, 115, 22, 0.14);
+  --site-shadow: 0 24px 80px rgba(0, 0, 0, 0.40);
+  --site-shadow-accent: 0 18px 50px rgba(249, 115, 22, 0.12);
   --site-gradient: linear-gradient(
     135deg,
-    #16161c 0%,
-    #23232b 38%,
-    #2f2d33 62%,
-    #1d1d24 100%
+    #18181b 0%,
+    #222226 38%,
+    #2a2a30 62%,
+    #1e1e22 100%
   );
   --site-gradient-accent: linear-gradient(
     135deg,
-    rgba(252, 232, 195, 0.98) 0%,
-    rgba(241, 200, 134, 0.98) 50%,
-    rgba(212, 165, 116, 0.98) 100%
+    rgba(255, 237, 213, 0.98) 0%,
+    rgba(253, 186, 116, 0.98) 50%,
+    rgba(249, 115, 22, 0.98) 100%
   );
   --site-gradient-line: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(212, 165, 116, 0.75) 50%,
+    rgba(249, 115, 22, 0.75) 50%,
     transparent 100%
   );
   --site-ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -100,7 +118,7 @@
   /* Base aliases */
   --color-background: var(--site-bg);
   --color-surface: #2a2a30;
-  --color-surface-light: #3a3a41;
+  --color-surface-light: #38383f;
   --color-foreground: var(--site-text);
   --color-border: rgba(255, 255, 255, 0.1);
   --color-border-light: rgba(255, 255, 255, 0.16);
@@ -119,11 +137,7 @@ body {
 }
 
 body {
-  background:
-    radial-gradient(circle at top left, rgba(212, 165, 116, 0.08), transparent 30%),
-    radial-gradient(circle at 85% 15%, rgba(252, 232, 195, 0.06), transparent 25%),
-    radial-gradient(circle at bottom right, rgba(212, 165, 116, 0.05), transparent 35%),
-    var(--site-gradient);
+  background: #131317;
   color: var(--site-text);
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -143,6 +157,28 @@ body {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
+/* Aurora diagonal sweep — background-position travels corner-to-corner
+   across an oversized gradient, creating soft light passing over dark surface */
+@keyframes auroraSweepA {
+  0%   { background-position: 0% 100%; }
+  50%  { background-position: 100% 0%; }
+  100% { background-position: 0% 100%; }
+}
+@keyframes auroraSweepB {
+  0%   { background-position: 100% 0%; }
+  50%  { background-position: 0% 100%; }
+  100% { background-position: 100% 0%; }
+}
+@keyframes auroraSweepC {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+.blob-drift-1 { animation: auroraSweepA 30s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+.blob-drift-2 { animation: auroraSweepB 38s cubic-bezier(0.45, 0, 0.55, 1) infinite; animation-delay: -14s; }
+.blob-drift-3 { animation: auroraSweepC 34s cubic-bezier(0.45, 0, 0.55, 1) infinite; animation-delay: -22s; }
+.blob-drift-4 { animation: auroraSweepA 44s cubic-bezier(0.45, 0, 0.55, 1) infinite; animation-delay: -7s; }
 
 .animate-gradient {
   background-size: 200% 200%;
@@ -329,6 +365,10 @@ body {
 }
 
 /* Editor and builder mode styles */
+[data-preview-section] {
+  isolation: isolate;
+}
+
 .editor [data-preview-section]:hover {
   outline: 2px dashed rgba(255,255,255,0.35);
   outline-offset: -2px;

@@ -1,416 +1,614 @@
 "use client";
 
-import FadeIn from "@/components/ui/FadeIn";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import SiteNav from "@/templates/shared/SiteNav";
+import { useSiteScroll } from "@/templates/shared/useSiteScroll";
+import SectionBackground, { getBgColor } from "@/templates/shared/SectionBackground";
+import { SCENE_FADE, getSceneAnimation } from "@/templates/shared/sceneTransition";
 
-export default function LuxeModernTemplate({
-    site,
-    branding,
-    content,
-    links,
-    isEditor = false,
-}) {
-    const sectionStyle = content.sectionStyle ?? {};
-    const heroAccentColor = sectionStyle.hero?.accentColor ?? branding.primaryColor;
-    const heroTextColor = content.hero?.textColor ?? "#ffffff";
-    const aboutHeadingColor = content.about?.headingColor ?? "#ffffff";
-    const aboutBodyColor = content.about?.bodyColor ?? "#d4d4d4";
-    const ctaButtonColor = content.cta?.color ?? branding.primaryColor;
-    const ctaTextColor = content.cta?.textColor ?? "#ffffff";
+const SECTIONS = ["hero", "about", "features", "portfolio", "cta"];
+const FADE = SCENE_FADE;
 
-    return (
-        <main
-            className={`text-white overflow-hidden ${isEditor ? "builder-mode" : ""}`}
-            suppressHydrationWarning
-        >
-            {/* HERO - SPLIT LAYOUT WITH ACCENT */}
-            <section
-                data-preview-section={isEditor ? "hero" : undefined}
-                className="relative py-32 border-b border-white/10"
-                style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}
+export default function LuxeModernTemplate({ site, branding, content, links, isEditor = false, editorPanel = null, onEditorPanelChange = null }) {
+    const SCROLL_SECTIONS = new Set(["about", "features"]);
+    const { view, switchView, containerRef, getScrollRef } = useSiteScroll(SECTIONS, { scrollSections: SCROLL_SECTIONS, isEditor });
+
+    const switchViewRef = useRef(switchView);
+    switchViewRef.current = switchView;
+
+    useEffect(() => {
+        if (!isEditor || !editorPanel) return;
+        switchViewRef.current(editorPanel);
+    }, [editorPanel, isEditor]);
+
+    function sa(id) {
+        return getSceneAnimation(SECTIONS, view, id);
+    }
+
+    const ss = content.sectionStyle ?? {};
+    const hero = content.hero ?? {};
+    const about = content.about ?? {};
+    const cta = content.cta ?? {};
+    const contact = content.contact ?? {};
+    const social = content.social ?? {};
+    const footer = content.footer ?? {};
+    const services = content.services ?? [];
+    const gallery = content.gallery ?? [];
+    const features = content.features ?? {};
+    const portfolio = content.portfolio ?? {};
+    const stats = content.stats ?? [];
+
+    const accent = ss.hero?.accentColor ?? branding?.accentColor ?? "#d4a574";
+    const heroBg = getBgColor(ss.hero?.bg, "#0d0d0d");
+    const aboutBg = getBgColor(ss.about?.bg, "#111111");
+    const featuresBg = getBgColor(ss.features?.bg, ss.hero?.bg ? getBgColor(ss.hero.bg, "#0d0d0d") : "#0d0d0d");
+    const ctaBg = getBgColor(ss.cta?.bg, "#0a0a0a");
+
+    /* ── Section renderers ── */
+
+    function renderHero() {
+        return (
+            <div
+                className="relative w-full h-full flex overflow-hidden"
+                style={{ backgroundColor: heroBg }}
+                data-preview-section="hero"
+                data-edit-type="background"
+                data-edit-field="content.sectionStyle.hero.bg"
+                data-edit-label="Hero Background"
             >
-                <div className="mx-auto max-w-7xl px-6">
-                    {/* Accent Line */}
-                    <div
-                        className="absolute left-0 top-0 bottom-0 w-1"
-                        style={{ backgroundColor: heroAccentColor }}
-                    />
+                <SectionBackground value={ss.hero?.bg} />
+                {/* Accent bar — left edge */}
+                <div className="w-1.5 flex-shrink-0" style={{ backgroundColor: accent }} />
 
-                    <div className="grid md:grid-cols-2 gap-20 items-center">
-                        {/* Content */}
-                        <div className="relative z-10">
-                            <FadeIn>
-                                <p
-                                    className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
-                                    style={{ color: heroAccentColor }}
-                                    data-editable-field="content.hero.eyebrow"
-                                >
-                                    {content.hero.eyebrow}
-                                </p>
-                            </FadeIn>
+                {/* Ambient glow behind headline */}
+                <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: `radial-gradient(ellipse at 30% 50%, ${accent}14 0%, transparent 55%)` }}
+                />
 
-                            <FadeIn delay={0.1}>
-                                <h1
-                                    className="text-6xl md:text-7xl font-bold leading-tight mb-6 cursor-text hover:opacity-80 transition"
-                                    style={{ color: heroTextColor }}
-                                    data-editable-field="content.hero.headline"
-                                >
-                                    {content.hero.headline}
-                                </h1>
-                            </FadeIn>
-
-                            <FadeIn delay={0.2}>
-                                <p
-                                    className="text-lg leading-relaxed mb-10 max-w-lg cursor-text hover:opacity-80 transition"
-                                    style={{ color: aboutBodyColor }}
-                                    data-editable-field="content.hero.subheadline"
-                                >
-                                    {content.hero.subheadline}
-                                </p>
-                            </FadeIn>
-
-                            <FadeIn delay={0.3}>
-                                <motion.a
-                                    href={content.cta.href}
-                                    whileHover={{ scale: 1.06, x: 4 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="inline-flex items-center justify-center px-8 py-3 rounded-sm text-sm font-semibold uppercase tracking-[0.15em] transition-all"
-                                    style={{
-                                        backgroundColor: ctaButtonColor,
-                                        color: ctaTextColor,
-                                    }}
-                                >
-                                    {content.cta.label}
-                                </motion.a>
-                            </FadeIn>
-                        </div>
-
-                        {/* Image */}
-                        <motion.div
-                            className="relative"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8 }}
-                        >
-                            <div className="relative aspect-square rounded-lg overflow-hidden bg-neutral-900 border border-white/10">
-                                <img
-                                    src={content.gallery?.[0]?.url || content.hero.logo}
-                                    alt="Hero"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                            {/* Decorative Elements */}
-                            <div
-                                className="absolute -top-4 -right-4 w-24 h-24 border-2 rounded-lg pointer-events-none"
-                                style={{ borderColor: heroAccentColor }}
+                {/* Content */}
+                <div className="flex-1 flex items-center px-16 py-20">
+                    <div className="max-w-3xl">
+                        {hero.logo && (
+                            <img
+                                src={hero.logo}
+                                alt={site?.name ?? ""}
+                                className="h-10 w-auto mb-14 object-contain"
+                                data-edit-type="image"
+                                data-edit-field="content.hero.logo"
+                                data-edit-label="Logo"
                             />
-                        </motion.div>
-                    </div>
-                </div>
-            </section>
+                        )}
 
-            {/* FEATURES - CARD GRID */}
-            <section
-                className="relative py-32 border-b border-white/10"
-                style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}
-            >
-                <div className="mx-auto max-w-7xl px-6">
-                    <FadeIn>
-                        <div className="mb-16">
-                            <p
-                                className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
-                                style={{ color: heroAccentColor }}
+                        <p
+                            className="text-[13px] uppercase tracking-[0.35em] mb-5 font-semibold"
+                            style={{ color: accent }}
+                            data-edit-type="text"
+                            data-edit-field="content.hero.eyebrow"
+                            data-edit-label="Eyebrow"
+                            data-edit-color-field="content.sectionStyle.hero.accentColor"
+                        >
+                            {hero.eyebrow}
+                        </p>
+
+                        <h1
+                            className="font-black leading-[0.9] tracking-tight mb-8"
+                            style={{ fontSize: "clamp(3rem, 7vw, 6.5rem)", color: hero.textColor ?? "#ffffff" }}
+                            data-edit-type="text"
+                            data-edit-field="content.hero.headline"
+                            data-edit-label="Headline"
+                            data-edit-color-field="content.hero.textColor"
+                        >
+                            {hero.headline}
+                        </h1>
+
+                        <p
+                            className="text-lg max-w-md leading-relaxed mb-12"
+                            style={{ color: hero.subheadlineColor ?? `${hero.textColor ?? "#ffffff"}55` }}
+                            data-edit-type="textarea"
+                            data-edit-field="content.hero.subheadline"
+                            data-edit-label="Subheadline"
+                            data-edit-color-field="content.hero.subheadlineColor"
+                        >
+                            {hero.subheadline}
+                        </p>
+
+                        <div className="flex items-center gap-6">
+                            <a
+                                href={isEditor ? undefined : (hero.buttonHref || "#")}
+                                className="inline-flex items-center gap-3 px-8 py-4 text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300"
+                                style={{ backgroundColor: hero.buttonColor ?? accent, color: hero.buttonTextColor ?? "#000000" }}
+                                data-edit-type="url"
+                                data-edit-field="content.hero.buttonHref"
+                                data-edit-label="Hero Button Link"
                             >
-                                WHY CHOOSE US
-                            </p>
-                            <h2 className="text-5xl font-bold leading-tight">
-                                Key Features
-                            </h2>
+                                <span
+                                    data-edit-type="text"
+                                    data-edit-field="content.hero.buttonLabel"
+                                    data-edit-label="Hero Button Text"
+                                >
+                                    {hero.buttonLabel ?? "Book Now"}
+                                </span>
+                                <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </a>
+
+                            {contact.email && (
+                                <a
+                                    href={isEditor ? undefined : `mailto:${contact.email}`}
+                                    className="text-sm font-medium tracking-wider transition-opacity hover:opacity-80"
+                                    style={{ color: `${hero.textColor ?? "#ffffff"}40` }}
+                                    data-edit-type="text"
+                                    data-edit-field="content.contact.email"
+                                    data-edit-label="Email"
+                                >
+                                    {contact.email}
+                                </a>
+                            )}
                         </div>
-                    </FadeIn>
-
-                    {/* Feature Cards */}
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {content.services && content.services.map((service, i) => (
-                            <FadeIn key={service} delay={i * 0.1}>
-                                <motion.div
-                                    whileHover={{ y: -4 }}
-                                    className="group relative p-8 rounded-lg border border-white/10 hover:border-white/30 transition-all cursor-text"
-                                    style={{ backgroundColor: "rgba(255,255,255,0.02)" }}
-                                >
-                                    {/* Card Number */}
-                                    <div
-                                        className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold"
-                                        style={{
-                                            backgroundColor: heroAccentColor,
-                                            color: "#000000",
-                                        }}
-                                    >
-                                        {i + 1}
-                                    </div>
-
-                                    <h3 className="text-xl font-semibold mb-4">{service}</h3>
-                                    <p className="text-neutral-400 text-sm leading-relaxed">
-                                        Discover what makes this feature essential for your success
-                                    </p>
-
-                                    {/* Hover Accent */}
-                                    <div
-                                        className="absolute bottom-0 left-0 h-1 w-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                        style={{ backgroundColor: heroAccentColor }}
-                                    />
-                                </motion.div>
-                            </FadeIn>
-                        ))}
                     </div>
                 </div>
-            </section>
 
-            {/* ABOUT - TEXT + IMAGE */}
-            <section
-                data-preview-section={isEditor ? "about" : undefined}
-                className="relative py-32 border-b border-white/10"
-                style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}
+                {/* Right: gallery image preview */}
+                {gallery[0]?.url && (
+                    <div className="w-[38%] flex-shrink-0 relative overflow-hidden">
+                        <img src={gallery[0].url} alt="" className="w-full h-full object-cover" />
+                        <div
+                            className="absolute inset-0"
+                            style={{ background: `linear-gradient(to right, ${heroBg} 0%, ${heroBg}aa 15%, transparent 50%)` }}
+                        />
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    function renderAbout() {
+        return (
+            <div
+                ref={isEditor ? undefined : getScrollRef("about")}
+                className="relative w-full h-full overflow-y-auto"
+                style={{ backgroundColor: aboutBg }}
+                data-preview-section="about"
+                data-edit-type="background"
+                data-edit-field="content.sectionStyle.about.bg"
+                data-edit-label="About Background"
             >
-                <div className="mx-auto max-w-7xl px-6">
-                    <div className="grid md:grid-cols-2 gap-16 items-center">
-                        {/* Image */}
-                        <FadeIn>
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                className="rounded-lg overflow-hidden border border-white/10"
-                            >
-                                <img
-                                    src={content.gallery?.[1]?.url || "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800"}
-                                    alt="About"
-                                    className="w-full h-[500px] object-cover"
-                                />
-                            </motion.div>
-                        </FadeIn>
+                <SectionBackground value={ss.about?.bg} />
+                <div className="flex min-h-full">
+                <div className="w-1.5 flex-shrink-0" style={{ backgroundColor: `${ss.about?.accentColor ?? accent}80` }} />
 
-                        {/* Content */}
-                        <FadeIn delay={0.1}>
-                            <div>
-                                <p
-                                    className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
-                                    style={{ color: heroAccentColor }}
-                                >
-                                    OUR STORY
-                                </p>
-                                <h2
-                                    className="text-5xl font-bold leading-tight mb-8 cursor-text hover:opacity-80 transition"
-                                    style={{ color: aboutHeadingColor }}
-                                    data-editable-field="content.about.title"
-                                >
-                                    {content.about.title}
-                                </h2>
+                {/* About text */}
+                <div className="flex-1 flex flex-col justify-center px-16 py-20">
+                    <p
+                        className="text-[13px] uppercase tracking-[0.35em] mb-4 font-semibold"
+                        style={{ color: ss.about?.accentColor ?? accent }}
+                        data-edit-type="text"
+                        data-edit-field="content.about.eyebrow"
+                        data-edit-label="About Eyebrow"
+                        data-edit-color-field="content.sectionStyle.about.accentColor"
+                    >
+                        {about.eyebrow ?? "Our Story"}
+                    </p>
 
-                                <p
-                                    className="text-lg leading-relaxed mb-8 cursor-text hover:opacity-80 transition"
-                                    style={{ color: aboutBodyColor }}
-                                    data-editable-field="content.about.body"
-                                >
-                                    {content.about.body}
-                                </p>
+                    <h2
+                        className="text-5xl font-black leading-tight mb-6 max-w-lg"
+                        style={{ color: about.headingColor ?? "#ffffff" }}
+                        data-edit-type="text"
+                        data-edit-field="content.about.title"
+                        data-edit-label="About Title"
+                        data-edit-color-field="content.about.headingColor"
+                    >
+                        {about.title}
+                    </h2>
 
-                                <motion.a
-                                    href={content.cta.href}
-                                    whileHover={{ x: 4 }}
-                                    className="inline-flex items-center text-sm font-semibold uppercase tracking-[0.15em] group"
-                                    style={{ color: heroAccentColor }}
-                                >
-                                    Learn More
-                                    <span className="ml-2 transition-transform group-hover:translate-x-2">
-                                        →
-                                    </span>
-                                </motion.a>
-                            </div>
-                        </FadeIn>
-                    </div>
+                    <p
+                        className="text-base leading-relaxed max-w-[40ch]"
+                        style={{ color: about.bodyColor ?? "#808080" }}
+                        data-edit-type="textarea"
+                        data-edit-field="content.about.body"
+                        data-edit-label="About Body"
+                        data-edit-color-field="content.about.bodyColor"
+                    >
+                        {about.body}
+                    </p>
                 </div>
-            </section>
 
-            {/* PORTFOLIO - SHOWCASE */}
-            <section
-                data-preview-section={isEditor ? "gallery" : undefined}
-                className="relative py-32 border-b border-white/10"
-                style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}
-            >
-                <div className="mx-auto max-w-7xl px-6">
-                    <FadeIn>
-                        <div className="mb-16">
-                            <p
-                                className="text-xs uppercase tracking-[0.4em] mb-4 font-semibold"
-                                style={{ color: heroAccentColor }}
-                            >
-                                RECENT WORK
-                            </p>
-                            <h2 className="text-5xl font-bold leading-tight">
-                                Our Portfolio
-                            </h2>
-                        </div>
-                    </FadeIn>
-
-                    {/* Portfolio Grid */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {content.gallery && content.gallery.map((image, i) => (
-                            <motion.div
-                                key={image.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
-                                whileHover={{ scale: 0.98 }}
-                                className="group relative aspect-video rounded-lg overflow-hidden cursor-pointer border border-white/10"
-                            >
-                                <img
-                                    src={image.url}
-                                    alt="Portfolio"
-                                    className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                                    <span className="text-white font-semibold opacity-0 group-hover:opacity-100 transition">
-                                        View Project
-                                    </span>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* STATS */}
-            <section className="relative py-32 border-b border-white/10" style={{ backgroundColor: sectionStyle.hero?.bg ?? "#000000" }}>
-                <div className="mx-auto max-w-7xl px-6">
-                    <div className="grid md:grid-cols-4 gap-8">
-                        {[
-                            { value: "1000+", label: "Happy Customers" },
-                            { value: "50+", label: "Awards Won" },
-                            { value: "15+", label: "Years Active" },
-                            { value: "99%", label: "Satisfaction Rate" },
-                        ].map((stat, i) => (
-                            <FadeIn delay={i * 0.1} key={stat.label}>
-                                <div className="text-center">
-                                    <p
-                                        className="text-5xl font-bold mb-2"
-                                        style={{ color: heroAccentColor }}
+                {/* Stats — right panel */}
+                {stats.length > 0 && (
+                    <div className="w-[42%] flex-shrink-0 flex items-center justify-center px-12 py-20 border-l border-white/6">
+                        <div className="grid grid-cols-2 gap-6 w-full max-w-sm">
+                            {stats.map((stat, i) => (
+                                <div
+                                    key={i}
+                                    className="rounded-xl border border-white/8 bg-white/3 p-7"
+                                >
+                                    <div
+                                        className="text-4xl font-black leading-none mb-2"
+                                        style={{ color: ss.about?.accentColor ?? accent }}
                                     >
                                         {stat.value}
-                                    </p>
-                                    <p className="text-neutral-400 text-sm uppercase tracking-[0.15em]">
-                                        {stat.label}
-                                    </p>
+                                    </div>
+                                    <div className="text-xs text-white/40 tracking-wider uppercase">{stat.label}</div>
                                 </div>
-                            </FadeIn>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                </div>
+            </div>
+        );
+    }
+
+    function renderFeatures() {
+        return (
+            <div
+                ref={isEditor ? undefined : getScrollRef("features")}
+                className="relative w-full h-full overflow-y-auto"
+                style={{ backgroundColor: featuresBg }}
+                data-preview-section="features"
+                data-edit-type="background"
+                data-edit-field="content.sectionStyle.features.bg"
+                data-edit-label="Features Background"
+            >
+                <SectionBackground value={ss.features?.bg} />
+                <div className="flex min-h-full">
+                <div className="w-1.5 flex-shrink-0" style={{ backgroundColor: `${accent}70` }} />
+
+                {/* Large background number */}
+                <div
+                    className="absolute right-12 bottom-8 text-[18rem] font-black leading-none pointer-events-none select-none"
+                    style={{ color: `${accent}05` }}
+                >
+                    {services.length || "·"}
+                </div>
+
+                <div className="flex-1 flex flex-col justify-center px-16 py-16 relative">
+                    <p
+                        className="text-[13px] uppercase tracking-[0.35em] mb-3 font-semibold"
+                        style={{ color: features.eyebrowColor ?? accent }}
+                        data-edit-type="text"
+                        data-edit-field="content.features.eyebrow"
+                        data-edit-label="Features Eyebrow"
+                        data-edit-color-field="content.features.eyebrowColor"
+                    >
+                        {features.eyebrow ?? "What We Do"}
+                    </p>
+
+                    <h2
+                        className="text-4xl font-black mb-10"
+                        style={{ color: features.headingColor ?? "#ffffff" }}
+                        data-edit-type="text"
+                        data-edit-field="content.features.heading"
+                        data-edit-label="Features Heading"
+                        data-edit-color-field="content.features.headingColor"
+                    >
+                        {features.heading ?? "Our Services"}
+                    </h2>
+
+                    <div className="grid grid-cols-2 gap-x-14 gap-y-0 max-w-3xl">
+                        {services.map((svc, i) => (
+                            <div
+                                key={i}
+                                className="flex items-start gap-5 py-4 border-b border-white/6"
+                            >
+                                <span
+                                    className="text-2xl font-black leading-none mt-1 flex-shrink-0"
+                                    style={{ color: features.numberColor ?? `${accent}35` }}
+                                >
+                                    {String(i + 1).padStart(2, "0")}
+                                </span>
+                                <span
+                                    className="text-base font-light pt-1 leading-snug flex-1"
+                                    style={{ color: features.textColor ?? "rgba(255,255,255,0.7)" }}
+                                    data-edit-type="text"
+                                    data-edit-field={`content.services.${i}`}
+                                    data-edit-label={`Service ${i + 1}`}
+                                >{svc}</span>
+                            </div>
+                        ))}
+                        {services.length === 0 && (
+                            <p className="text-white/20 text-sm col-span-2 py-4">No services added yet</p>
+                        )}
+                    </div>
+                </div>                </div>            </div>
+        );
+    }
+
+    function renderPortfolio() {
+        const imgs = gallery.slice(0, 6);
+        return (
+            <div
+                className="relative w-full h-full flex flex-col overflow-hidden"
+                style={{ backgroundColor: getBgColor(ss.gallery?.bg, "#0a0a0a") }}
+                data-preview-section="portfolio"
+                data-edit-type="background"
+                data-edit-field="content.sectionStyle.gallery.bg"
+                data-edit-label="Portfolio Background"
+            >
+                <SectionBackground value={ss.gallery?.bg} />
+                <div className="absolute top-0 left-1.5 right-0 h-px" style={{ backgroundColor: `${accent}30` }} />
+
+                <div className="flex-shrink-0 flex items-end justify-between px-16 pt-12 pb-6">
+                    <div>
+                        <p
+                            className="text-[13px] uppercase tracking-[0.35em] mb-2 font-semibold"
+                            style={{ color: accent }}
+                            data-edit-type="text"
+                            data-edit-field="content.portfolio.eyebrow"
+                            data-edit-label="Portfolio Eyebrow"
+                            data-edit-color-field="content.sectionStyle.hero.accentColor"
+                        >
+                            {portfolio.eyebrow ?? "Recent Work"}
+                        </p>
+                        <h2
+                            className="text-4xl font-black"
+                            style={{ color: portfolio.headingColor ?? "#ffffff" }}
+                            data-edit-type="text"
+                            data-edit-field="content.portfolio.heading"
+                            data-edit-label="Portfolio Heading"
+                            data-edit-color-field="content.portfolio.headingColor"
+                        >
+                            {portfolio.heading ?? "Our Portfolio"}
+                        </h2>
+                    </div>
+                    <div className="w-1.5 h-10 rounded-full" style={{ backgroundColor: accent }} />
+                </div>
+
+                <div className="flex-1 min-h-0 grid grid-cols-3 gap-2 px-16 pb-14">
+                    {imgs.map((img, i) => (
+                        <div key={img.id ?? i} className="relative overflow-hidden group rounded-sm">
+                            <img
+                                src={img.url}
+                                alt=""
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                                data-edit-type="image"
+                                data-edit-field={`content.gallery.${i}.url`}
+                                data-edit-label={`Portfolio Image ${i + 1}`}
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-500" />
+                            <div
+                                className="absolute bottom-0 left-0 w-full h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left"
+                                style={{ backgroundColor: accent }}
+                            />
+                        </div>
+                    ))}
+                    {imgs.length === 0 && (
+                        <div className="col-span-3 flex items-center justify-center text-white/15 text-sm tracking-widest uppercase">
+                            Add portfolio images
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    function renderCta() {
+        return (
+            <div
+                className="relative w-full h-full flex overflow-hidden"
+                style={{ backgroundColor: ctaBg }}
+                data-preview-section="cta"
+                data-edit-type="background"
+                data-edit-field="content.sectionStyle.cta.bg"
+                data-edit-label="CTA Background"
+            >
+                <SectionBackground value={ss.cta?.bg} />
+                <div className="w-1.5 flex-shrink-0" style={{ backgroundColor: accent }} />
+
+                {/* CTA content */}
+                <div className="flex-1 flex flex-col justify-center px-16 py-20">
+                    <p
+                        className="text-[13px] uppercase tracking-[0.35em] mb-5 font-semibold"
+                        style={{ color: accent }}
+                        data-edit-type="text"
+                        data-edit-field="content.cta.eyebrow"
+                        data-edit-label="CTA Eyebrow"
+                        data-edit-color-field="content.sectionStyle.hero.accentColor"
+                    >
+                        {cta.eyebrow ?? "Get In Touch"}
+                    </p>
+
+                    <h2
+                        className="text-5xl font-black leading-tight mb-4 max-w-lg"
+                        style={{ color: cta.headingColor ?? "#ffffff" }}
+                        data-edit-type="text"
+                        data-edit-field="content.cta.heading"
+                        data-edit-label="CTA Heading"
+                        data-edit-color-field="content.cta.headingColor"
+                    >
+                        {cta.heading ?? "Ready to Get Started?"}
+                    </h2>
+
+                    <p
+                        className="text-sm mb-10 max-w-sm leading-relaxed"
+                        style={{ color: cta.bodyColor ?? "rgba(255,255,255,0.4)" }}
+                        data-edit-type="textarea"
+                        data-edit-field="content.cta.body"
+                        data-edit-label="CTA Body"
+                        data-edit-color-field="content.cta.bodyColor"
+                    >
+                        {cta.body ?? "Contact us today and let's discuss your event."}
+                    </p>
+
+                    <a
+                        href={isEditor ? undefined : (cta.href || "#")}
+                        className="inline-flex items-center gap-3 px-8 py-4 text-sm font-bold tracking-[0.15em] uppercase w-fit transition-all duration-300"
+                        style={{ backgroundColor: cta.color ?? accent, color: cta.textColor ?? "#000000" }}
+                        data-edit-type="buttonColor"
+                        data-edit-field="content.cta.color"
+                        data-edit-label="CTA Button Color"
+                    >
+                        <span
+                            data-edit-type="text"
+                            data-edit-field="content.cta.label"
+                            data-edit-label="CTA Button Text"
+                        >
+                            {cta.label ?? "Book Now"}
+                        </span>
+                        <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </a>
+                </div>
+
+                {/* Contact details — right panel */}
+                <div className="w-[38%] flex-shrink-0 flex flex-col justify-center px-14 py-20 border-l border-white/6">
+                    <div className="space-y-7">
+                        {contact.email && (
+                            <div>
+                                <p className="text-[9px] uppercase tracking-widest mb-1.5" style={{ color: `${accent}60` }}>Email</p>
+                                <a
+                                    href={isEditor ? undefined : `mailto:${contact.email}`}
+                                    className="text-white/65 text-sm hover:text-white transition-colors leading-relaxed"
+                                    data-edit-type="text"
+                                    data-edit-field="content.contact.email"
+                                    data-edit-label="Email"
+                                >
+                                    {contact.email}
+                                </a>
+                            </div>
+                        )}
+                        {contact.phone && (
+                            <div>
+                                <p className="text-[9px] uppercase tracking-widest mb-1.5" style={{ color: `${accent}60` }}>Phone</p>
+                                <a
+                                    href={isEditor ? undefined : `tel:${contact.phone}`}
+                                    className="text-white/65 text-sm hover:text-white transition-colors"
+                                    data-edit-type="text"
+                                    data-edit-field="content.contact.phone"
+                                    data-edit-label="Phone"
+                                >
+                                    {contact.phone}
+                                </a>
+                            </div>
+                        )}
+                        {(isEditor || social.instagram || social.facebook || social.tiktok) && (
+                            <div>
+                                <p className="text-[9px] uppercase tracking-widest mb-3" style={{ color: `${accent}60` }}>Social</p>
+                                <div className="flex gap-4">
+                                    {(isEditor || social.instagram) && (
+                                        <a
+                                            href={isEditor ? undefined : social.instagram}
+                                            className="text-white/30 hover:text-white transition-colors"
+                                            data-edit-type="url"
+                                            data-edit-field="content.social.instagram"
+                                            data-edit-label="Instagram URL"
+                                        >
+                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <rect x="2" y="2" width="20" height="20" rx="5" />
+                                                <circle cx="12" cy="12" r="4" />
+                                                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+                                            </svg>
+                                        </a>
+                                    )}
+                                    {(isEditor || social.facebook) && (
+                                        <a
+                                            href={isEditor ? undefined : social.facebook}
+                                            className="text-white/30 hover:text-white transition-colors"
+                                            data-edit-type="url"
+                                            data-edit-field="content.social.facebook"
+                                            data-edit-label="Facebook URL"
+                                        >
+                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                                            </svg>
+                                        </a>
+                                    )}
+                                    {(isEditor || social.tiktok) && (
+                                        <a
+                                            href={isEditor ? undefined : social.tiktok}
+                                            className="text-white/30 hover:text-white transition-colors"
+                                            data-edit-type="url"
+                                            data-edit-field="content.social.tiktok"
+                                            data-edit-label="TikTok URL"
+                                        >
+                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.35a8.28 8.28 0 004.83 1.53V6.44a4.85 4.85 0 01-1.06-.25h.05z" />
+                                            </svg>
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <p
+                        className="mt-16 text-xs"
+                        style={{ color: footer.textColor ?? "rgba(255,255,255,0.12)" }}
+                        data-edit-type="textarea"
+                        data-edit-field="content.footer.description"
+                        data-edit-label="Footer Text"
+                        data-edit-color-field="content.footer.textColor"
+                    >
+                        {footer.description ?? `© ${new Date().getFullYear()} ${site?.name ?? ""}`}
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    /* ── EDITOR MODE ── */
+    if (isEditor) {
+        function nav(s) { switchView(s); onEditorPanelChange?.(s); }
+        const idx = SECTIONS.indexOf(view);
+        return (
+            <main className="relative w-full h-full overflow-hidden" suppressHydrationWarning>
+                {view === "hero" && renderHero()}
+                {view === "about" && renderAbout()}
+                {view === "features" && renderFeatures()}
+                {view === "portfolio" && renderPortfolio()}
+                {view === "cta" && renderCta()}
+
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-black/75 backdrop-blur-md rounded-full px-3 py-2 border border-white/10 shadow-xl">
+                    <button
+                        onClick={() => idx > 0 && nav(SECTIONS[idx - 1])}
+                        disabled={idx === 0}
+                        className="w-5 h-5 flex items-center justify-center text-white/50 hover:text-white disabled:opacity-20 transition-colors"
+                    >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <div className="flex items-center gap-1.5">
+                        {SECTIONS.map((s) => (
+                            <button key={s} onClick={() => nav(s)} title={s}
+                                className={`rounded-full transition-all duration-200 ${s === view ? "w-4 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/30 hover:bg-white/60"}`}
+                            />
                         ))}
                     </div>
+                    <button
+                        onClick={() => idx < SECTIONS.length - 1 && nav(SECTIONS[idx + 1])}
+                        disabled={idx === SECTIONS.length - 1}
+                        className="w-5 h-5 flex items-center justify-center text-white/50 hover:text-white disabled:opacity-20 transition-colors"
+                    >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                    </button>
                 </div>
-            </section>
+            </main>
+        );
+    }
 
-            {/* CTA */}
-            <section className="relative py-32 border-b border-white/10" style={{ backgroundColor: sectionStyle.about?.bg ?? "#0a0a0a" }}>
-                <div className="mx-auto max-w-3xl px-6 text-center">
-                    <FadeIn>
-                        <h2 className="text-6xl font-bold mb-8">
-                            Ready to Begin?
-                        </h2>
-                    </FadeIn>
+    /* ── LIVE MODE ── */
+    return (
+        <main ref={containerRef} className="relative h-screen overflow-hidden" suppressHydrationWarning>
+            <SiteNav sections={SECTIONS} view={view} switchView={switchView} accent={accent} />
 
-                    <FadeIn delay={0.1}>
-                        <p className="text-lg text-neutral-400 mb-10">
-                            Let's create something amazing together
-                        </p>
-                    </FadeIn>
-
-                    <FadeIn delay={0.2}>
-                        <motion.a
-                            href={content.cta.href}
-                            whileHover={{ scale: 1.06 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="inline-flex items-center justify-center px-10 py-4 rounded-sm text-sm font-semibold uppercase tracking-[0.15em]"
-                            style={{
-                                backgroundColor: ctaButtonColor,
-                                color: ctaTextColor,
-                            }}
-                        >
-                            {content.cta.label}
-                        </motion.a>
-                    </FadeIn>
-                </div>
-            </section>
-
-            {/* FOOTER */}
-            <footer
-                data-preview-section={isEditor ? "footer" : undefined}
-                className="py-16 border-t border-white/10"
-                style={{ backgroundColor: sectionStyle.footer?.bg ?? "#000000" }}
-            >
-                <div className="mx-auto max-w-7xl px-6">
-                    <div className="grid md:grid-cols-4 gap-12 mb-12 pb-12 border-b border-white/10">
-                        <div>
-                            <p className="font-semibold mb-4">{site.name}</p>
-                            <p className="text-neutral-400 text-sm">
-                                Modern solutions for modern problems
-                            </p>
-                        </div>
-
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.15em] font-semibold mb-4">
-                                Company
-                            </p>
-                            <ul className="space-y-2 text-sm text-neutral-400">
-                                <li><a href="#" className="hover:text-white transition">About</a></li>
-                                <li><a href="#" className="hover:text-white transition">Services</a></li>
-                                <li><a href="#" className="hover:text-white transition">Work</a></li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.15em] font-semibold mb-4">
-                                Contact
-                            </p>
-                            {content.contact?.email && (
-                                <a href={`mailto:${content.contact.email}`} className="text-neutral-400 text-sm hover:text-white transition block">
-                                    {content.contact.email}
-                                </a>
-                            )}
-                            {content.contact?.phone && (
-                                <a href={`tel:${content.contact.phone}`} className="text-neutral-400 text-sm hover:text-white transition">
-                                    {content.contact.phone}
-                                </a>
-                            )}
-                        </div>
-
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.15em] font-semibold mb-4">
-                                Follow
-                            </p>
-                            {content.social && (
-                                <div className="flex gap-3">
-                                    {content.social.instagram && (
-                                        <a href={content.social.instagram} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition">
-                                            IG
-                                        </a>
-                                    )}
-                                    {content.social.tiktok && (
-                                        <a href={content.social.tiktok} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition">
-                                            TT
-                                        </a>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-neutral-600">
-                        <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-                        <div className="flex gap-6">
-                            <a href="#" className="hover:text-neutral-300 transition">Privacy</a>
-                            <a href="#" className="hover:text-neutral-300 transition">Terms</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            {SECTIONS.map((s) => (
+                <motion.div
+                    key={s}
+                    animate={sa(s)}
+                    transition={FADE}
+                    className="absolute inset-0"
+                    style={{ pointerEvents: s === view ? "auto" : "none" }}
+                >
+                    {s === "hero" && renderHero()}
+                    {s === "about" && renderAbout()}
+                    {s === "features" && renderFeatures()}
+                    {s === "portfolio" && renderPortfolio()}
+                    {s === "cta" && renderCta()}
+                </motion.div>
+            ))}
         </main>
     );
 }

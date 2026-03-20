@@ -66,10 +66,16 @@ export async function PATCH(request, { params }) {
 
     return Response.json({ site: serializeSite(result) });
   } catch (error) {
-    return Response.json(
-      { error: error?.issues?.[0]?.message || "Unable to update site." },
-      { status: 400 }
-    );
+    let message;
+    if (error?.issues?.length) {
+      const issue = error.issues[0];
+      const field = issue.path?.join('.') || 'unknown field';
+      message = `${field}: ${issue.message}`;
+    } else {
+      message = error?.message || 'Unable to update site.';
+    }
+    console.error('[PATCH /api/sites/:id]', error);
+    return Response.json({ error: message }, { status: 400 });
   }
 }
 

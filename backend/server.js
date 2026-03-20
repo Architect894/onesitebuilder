@@ -4,7 +4,7 @@ const bcryptjs = require('bcryptjs');
 require('dotenv').config({ path: '.env.local' });
 
 const app = express();
-const PORT = 3001;
+const PORT = 3002;
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'onesitebuilder';

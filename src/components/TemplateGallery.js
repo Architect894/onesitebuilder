@@ -101,7 +101,7 @@ const templates = [
     },
 ];
 
-export default function TemplateGallery() {
+export default function TemplateGallery({ onTemplateClick }) {
     const [current, setCurrent] = useState(0);
     const [mounted, setMounted] = useState(false);
 
@@ -135,34 +135,55 @@ export default function TemplateGallery() {
 
                 <div className="relative">
                     {/* Template Preview Window */}
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={current}
-                            initial={{ opacity: 0, x: 100 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -100 }}
-                            transition={{ duration: 0.5 }}
-                            className="bg-white rounded-2xl overflow-hidden shadow-2xl shadow-black/50 h-[600px] md:h-[800px] border border-gray-200"
-                        >
-                            {/* Preview Container */}
-                            <div className="w-full h-full overflow-auto">
-                                <div className="w-full min-h-full bg-white">
-                                    {mounted ? (
-                                        <CurrentComponent
-                                            site={mockData.site}
-                                            branding={mockData.branding}
-                                            content={mockData.content}
-                                            links={mockData.links}
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                                            <div className="text-gray-500">Loading template...</div>
-                                        </div>
-                                    )}
+                    <motion.div
+                        onClick={() => onTemplateClick?.(currentTemplate)}
+                        className="cursor-pointer group relative"
+                    >
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={current}
+                                initial={{ opacity: 0, x: 100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -100 }}
+                                transition={{ duration: 0.5 }}
+                                className="bg-white rounded-2xl overflow-hidden shadow-2xl shadow-black/50 h-[600px] md:h-[800px] border border-gray-200 group-hover:border-amber-300 transition-colors"
+                            >
+                                {/* Preview Container */}
+                                <div className="w-full h-full overflow-auto">
+                                    <div className="w-full min-h-full bg-white">
+                                        {mounted ? (
+                                            <CurrentComponent
+                                                site={mockData.site}
+                                                branding={mockData.branding}
+                                                content={mockData.content}
+                                                links={mockData.links}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                                <div className="text-gray-500">Loading template...</div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Full Screen Icon Overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            whileHover={{ opacity: 1 }}
+                            className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center pointer-events-none group-hover:pointer-events-auto transition-all"
+                        >
+                            <motion.div
+                                whileHover={{ scale: 1.2 }}
+                                className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center backdrop-blur-sm"
+                            >
+                                <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6v12h12v-6m0-3V4m0 0h4m-4 0L9 15" />
+                                </svg>
+                            </motion.div>
                         </motion.div>
-                    </AnimatePresence>
+                    </motion.div>
 
                     {/* Navigation Buttons */}
                     <motion.button
